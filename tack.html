@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tack för din förfrågan – Svalbergs Bilteknik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --carbon: #0D0D0F; --steel: #1A1C22; --panel: #22252D;
+    --ice: #3DDFFF; --ice-dim: rgba(61,223,255,0.12); --ice-border: rgba(61,223,255,0.3);
+    --tungsten: #C8C0B4; --white: #F5F5F5; --muted: #6E7380; --divider: rgba(255,255,255,0.08);
+    --green: #2CB97A; --green-dim: rgba(44,185,122,0.1);
+  }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--carbon);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Animated background */
+  canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Glow */
+  .glow {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(44,185,122,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 70% 30%, rgba(61,223,255,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Card */
+  .card {
+    position: relative;
+    z-index: 10;
+    background: var(--steel);
+    border: 1px solid rgba(44,185,122,0.3);
+    border-radius: 8px;
+    padding: 3.5rem 3rem;
+    max-width: 480px;
+    width: calc(100% - 3rem);
+    text-align: center;
+    box-shadow: 0 0 60px rgba(44,185,122,0.08);
+    animation: rise 0.6s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Checkmark */
+  .check-wrap {
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: var(--green-dim);
+    border: 1px solid rgba(44,185,122,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    animation: pop 0.5s 0.3s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  @keyframes pop {
+    from { transform: scale(0.4); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .check-wrap svg {
+    width: 2rem;
+    height: 2rem;
+    stroke: var(--green);
+    stroke-width: 2.5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Draw-on checkmark animation */
+  .check-wrap svg path {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: draw 0.4s 0.6s ease forwards;
+  }
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  .eyebrow {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 0.8rem;
+  }
+
+  h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 6vw, 3.2rem);
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.2rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: var(--tungsten);
+    line-height: 1.8;
+    margin-bottom: 0.8rem;
+  }
+
+  .divider-line {
+    width: 3rem;
+    height: 1px;
+    background: rgba(44,185,122,0.3);
+    margin: 1.5rem auto;
+  }
+
+  .what-next {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    text-align: left;
+    margin-bottom: 2rem;
+  }
+
+  .next-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--tungsten);
+  }
+
+  .next-num {
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--ice-border);
+    color: var(--ice);
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .btn-home {
+    display: inline-block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--carbon);
+    background: var(--ice);
+    padding: 0.85rem 2.2rem;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .btn-home:hover { opacity: 0.85; }
+
+  .countdown {
+    margin-top: 0.8rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* Logo top */
+  .logo {
+    position: fixed;
+    top: 1.5rem;
+    left: 2rem;
+    z-index: 20;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .logo span { color: var(--ice); }
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div class="glow"></div>
+
+<a href="index.html" class="logo">Svalbergs<span> Bilteknik</span></a>
+
+<div class="card">
+  <div class="check-wrap">
+    <svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 7"/></svg>
+  </div>
+
+  <div class="eyebrow">Förfrågan mottagen</div>
+  <h1>Tack!</h1>
+
+  <p>Vi har tagit emot din förfrågan och hör av oss inom <strong style="color:var(--white);">24 timmar</strong> — oftast snabbare.</p>
+
+  <div class="divider-line"></div>
+
+  <div class="what-next">
+    <div class="next-item">
+      <div class="next-num">1</div>
+      <span>Vi läser igenom din förfrågan och tittar på fordonsuppgifterna.</span>
+    </div>
+    <div class="next-item">
+      <div class="next-num">2</div>
+      <span>Du får ett svar med eventuella följdfrågor eller direkt en offert.</span>
+    </div>
+    <div class="next-item">
+      <div class="next-num">3</div>
+      <span>När du godkänt offerten bokar vi in en tid som passar dig.</span>
+    </div>
+  </div>
+
+  <a href="index.html" class="btn-home" id="homeBtn">Tillbaka till startsidan</a>
+  <div class="countdown" id="countdown">Skickas dig automatiskt om <span id="secs">10</span> sekunder</div>
+</div>
+
+<script>
+/* Countdown redirect */
+var secs = 10;
+var el = document.getElementById('secs');
+var timer = setInterval(function() {
+  secs--;
+  el.textContent = secs;
+  if (secs <= 0) {
+    clearInterval(timer);
+    window.location.href = 'index.html';
+  }
+}, 1000);
+
+/* Cancel redirect if user clicks button */
+document.getElementById('homeBtn').addEventListener('click', function() {
+  clearInterval(timer);
+  document.getElementById('countdown').style.display = 'none';
+});
+
+/* Particle background */
+(function() {
+  var canvas = document.getElementById('bg');
+  var ctx = canvas.getContext('2d');
+  var w, h, t = 0;
+  var particles = [];
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (var i = 0; i < 50; i++) {
+    particles.push({
+      x: Math.random(), y: Math.random(),
+      r: 0.5 + Math.random() * 1.5,
+      vx: (Math.random() - 0.5) * 0.00012,
+      vy: (Math.random() - 0.5) * 0.00012,
+      alpha: 0.06 + Math.random() * 0.18,
+      pulse: Math.random() * Math.PI * 2,
+      pulseSpeed: 0.008 + Math.random() * 0.012,
+      green: Math.random() > 0.5
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(function(p) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = 1; if (p.x > 1) p.x = 0;
+      if (p.y < 0) p.y = 1; if (p.y > 1) p.y = 0;
+      p.pulse += p.pulseSpeed;
+      var pa = p.alpha * (0.5 + 0.5 * Math.sin(p.pulse));
+      var px = p.x * w, py = p.y * h;
+      var color = p.green ? '44,185,122' : '61,223,255';
+      var grd = ctx.createRadialGradient(px, py, 0, px, py, p.r * 5);
+      grd.addColorStop(0, 'rgba(' + color + ',' + pa + ')');
+      grd.addColorStop(1, 'rgba(' + color + ',0)');
+      ctx.beginPath();
+      ctx.arc(px, py, p.r * 5, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(px, py, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + color + ',' + (pa * 2.5) + ')';
+      ctx.fill();
+    });
+    t++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+</body>
+</html>

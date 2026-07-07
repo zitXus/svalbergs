@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Om oss – Svalbergs Bilteknik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --carbon: #0D0D0F; --steel: #1A1C22; --panel: #22252D;
+    --ice: #3DDFFF; --ice-dim: rgba(61,223,255,0.12); --ice-border: rgba(61,223,255,0.3);
+    --tungsten: #C8C0B4; --white: #F5F5F5; --muted: #6E7380; --divider: rgba(255,255,255,0.08);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--carbon); color: var(--white); line-height: 1.6; overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 2.5rem; background: rgba(13,13,15,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--divider); }
+  .nav-logo { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--white); text-decoration: none; }
+  .nav-logo span { color: var(--ice); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tungsten); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a.active { color: var(--ice); }
+  .nav-cta { font-size: 0.78rem !important; font-weight: 600 !important; color: var(--carbon) !important; background: var(--ice); padding: 0.5rem 1.2rem; border-radius: 2px; transition: opacity 0.2s; }
+  .nav-cta:hover { opacity: 0.85; }
+
+  .page-hero { padding: 9rem 2.5rem 5rem; background: var(--steel); border-bottom: 1px solid var(--divider); position: relative; overflow: hidden; }
+  .page-hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 80% at 80% 50%, rgba(61,223,255,0.06) 0%, transparent 70%); pointer-events: none; }
+  .page-hero-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ice); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .page-hero-label::before { content: ''; display: inline-block; width: 1.5rem; height: 1px; background: var(--ice); }
+  .page-hero h1 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: clamp(3rem, 7vw, 6rem); text-transform: uppercase; line-height: 0.95; letter-spacing: -0.01em; }
+  .page-hero p { margin-top: 1.2rem; color: var(--tungsten); max-width: 520px; font-size: 0.95rem; line-height: 1.75; }
+
+  main { max-width: 1000px; margin: 0 auto; padding: 5rem 2.5rem; }
+
+  /* INTRO */
+  .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; margin-bottom: 5rem; }
+
+  .portrait {
+    background: var(--steel); border: 1px solid var(--divider); border-radius: 4px;
+    aspect-ratio: 3/4; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 1rem;
+    position: relative; overflow: hidden;
+  }
+  .portrait::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 50% 40%, var(--ice-dim) 0%, transparent 70%); }
+  .portrait svg { width: 5rem; height: 5rem; opacity: 0.2; position: relative; }
+  .portrait span { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); opacity: 0.6; position: relative; }
+  .portrait .caption { position: absolute; bottom: 1.2rem; left: 1.2rem; right: 1.2rem; }
+  .portrait .caption .name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.3rem; text-transform: uppercase; color: var(--white); }
+  .portrait .caption .role { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ice); margin-top: 0.2rem; }
+
+  .section-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ice); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .section-label::before { content: ''; display: inline-block; width: 1.5rem; height: 1px; background: var(--ice); }
+
+  .intro-text h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 2.5rem; text-transform: uppercase; line-height: 1; margin-bottom: 1.5rem; }
+  .intro-text p { color: var(--tungsten); font-size: 0.92rem; line-height: 1.85; margin-bottom: 1.2rem; }
+
+  /* VALUES */
+  .values-section { padding: 4rem 0; border-top: 1px solid var(--divider); border-bottom: 1px solid var(--divider); margin-bottom: 4rem; }
+  .values-section h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 2.2rem; text-transform: uppercase; margin-bottom: 2.5rem; }
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .value-card { background: var(--steel); border: 1px solid var(--divider); border-radius: 4px; padding: 1.8rem; }
+  .value-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 2.5rem; color: var(--ice); opacity: 0.3; line-height: 1; margin-bottom: 0.75rem; }
+  .value-card h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.2rem; text-transform: uppercase; margin-bottom: 0.6rem; color: var(--white); }
+  .value-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+  /* TIMELINE */
+  .timeline-section { margin-bottom: 4rem; }
+  .timeline-section h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 2.2rem; text-transform: uppercase; margin-bottom: 2.5rem; }
+  .timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 3.5rem; top: 0; bottom: 0; width: 1px; background: var(--divider); }
+  .timeline-item { display: grid; grid-template-columns: 7rem 1fr; gap: 2rem; padding: 1.8rem 0; border-bottom: 1px solid var(--divider); position: relative; }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-year { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--ice); text-align: right; padding-right: 2rem; position: relative; padding-top: 0.1rem; }
+  .timeline-year::after { content: ''; position: absolute; right: -0.35rem; top: 0.55rem; width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--ice); border: 2px solid var(--carbon); }
+  .timeline-content h4 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--white); }
+  .timeline-content p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+  /* BRANDS */
+  .brands-section { padding: 3.5rem 0; border-top: 1px solid var(--divider); margin-bottom: 4rem; }
+  .brands-section h2 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 2.2rem; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .brands-section p { color: var(--tungsten); font-size: 0.88rem; margin-bottom: 2rem; }
+  .brand-list { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .brand-tag { background: var(--panel); border: 1px solid var(--divider); border-radius: 2px; padding: 0.5rem 1.1rem; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em; color: var(--tungsten); }
+
+  /* CTA */
+  .cta-block { background: var(--steel); border: 1px solid var(--divider); border-radius: 4px; padding: 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .cta-block h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.8rem; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .cta-block p { color: var(--tungsten); font-size: 0.88rem; max-width: 380px; }
+  .btn-primary { display: inline-block; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--carbon); background: var(--ice); padding: 0.85rem 2rem; border-radius: 2px; text-decoration: none; white-space: nowrap; flex-shrink: 0; transition: opacity 0.2s; }
+  .btn-primary:hover { opacity: 0.85; }
+
+  footer { background: var(--steel); border-top: 1px solid var(--divider); padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  footer .logo { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.2rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--white); }
+  footer .logo span { color: var(--ice); }
+  footer p { font-size: 0.78rem; color: var(--muted); }
+  footer a { color: var(--muted); text-decoration: none; font-size: 0.78rem; }
+  footer a:hover { color: var(--ice); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; } .nav-links { display: none; }
+    main { padding: 3.5rem 1.5rem; } .page-hero { padding: 7rem 1.5rem 3.5rem; }
+    .intro-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .values-grid { grid-template-columns: 1fr; }
+    .cta-block { flex-direction: column; align-items: flex-start; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* Mobile hamburger */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(13,13,15,0.98);
+    z-index: 99;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 2.8rem;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--ice); }
+  .mobile-menu .m-cta {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem !important;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--carbon) !important;
+    background: var(--ice);
+    padding: 0.85rem 2.5rem;
+    border-radius: 2px;
+    margin-top: 1rem;
+  }
+
+  /* Floating mobile CTA */
+  .float-cta {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 98;
+    background: var(--ice);
+    color: var(--carbon);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    width: 3.8rem;
+    height: 3.8rem;
+    border-radius: 50%;
+    box-shadow: 0 4px 24px rgba(61,223,255,0.35);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
+    transition: opacity 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .float-cta:hover {
+    opacity: 0.9;
+    box-shadow: 0 6px 30px rgba(61,223,255,0.5);
+    transform: scale(1.08);
+  }
+
+  @media (max-width: 900px) {
+    .hamburger { display: flex; }
+    .float-cta { display: flex; }
+  }
+
+  .social-link { color: var(--muted); transition: color 0.2s; display:flex;align-items:center; }
+  .social-link:hover { color: var(--ice); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Svalbergs<span> Bilteknik</span></a>
+  <ul class="nav-links">
+    <li><a href="tjanster.html">Tjänster</a></li>
+    <li><a href="galleri.html">Galleri</a></li>
+    <li><a href="prislista.html">Prislista</a></li>
+    <li><a href="om-oss.html" class="active">Om oss</a></li>
+    <li><a href="boka.html" class="nav-cta">Boka konsultation</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Meny">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="tjanster.html">Tjänster</a>
+  <a href="galleri.html">Galleri</a>
+  <a href="prislista.html">Prislista</a>
+  <a href="om-oss.html">Om oss</a>
+  <a href="boka.html" class="m-cta">Boka konsultation</a>
+</div>
+
+<!-- Floating mobile CTA -->
+<a href="boka.html" class="float-cta" aria-label="Boka konsultation">Boka</a>
+
+<div class="page-hero">
+  <div class="page-hero-label">Mannen bakom verktygen</div>
+  <h1>Om oss</h1>
+  <p>Svalbergs Bilteknik är ett enmansprojekt drivet av passion för bra ljud och välgjorda installationer. Varje jobb behandlas som om det vore min egen bil.</p>
+</div>
+
+<main>
+
+  <div class="intro-grid">
+    <div class="portrait">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="14" stroke="#3DDFFF" stroke-width="2"/>
+        <path d="M10 72C10 56 24 46 40 46C56 46 70 56 70 72" stroke="#3DDFFF" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>Lägg till foto</span>
+      <div class="caption">
+        <div class="name">Svalberg</div>
+        <div class="role">Grundare & Installatör</div>
+      </div>
+    </div>
+
+    <div class="intro-text">
+      <div class="section-label">Min historia</div>
+      <h2>Passion sedan ungdomen</h2>
+      <p>Intresset för billjud började tidigt — med en billig subwoofer i en gammal Volvo och massor av trial and error. Sedan dess har det blivit hundratals installationer, oräkneliga timmar av inlärning och ett genuint intresse för att göra varje system bättre än det förra.</p>
+      <p>Idag driver jag Svalbergs Bilteknik med ett enkelt mål: att ge varje kund samma noggrannhet och engagemang som jag lägger på mina egna projekt. Jag tar ett jobb i taget, gör det ordentligt och lämnar aldrig bilen förrän allting är precis som det ska.</p>
+      <p>Bor och verkar i Sverige och hanterar alla typer av personbilar — från vardagsbilen till hobbyprojektet.</p>
+    </div>
+  </div>
+
+  <div class="values-section">
+    <h2>Hur jag jobbar</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-num">01</div>
+        <h3>Inga genvägar</h3>
+        <p>Kablar fästs ordentligt, genomföringar används alltid, och paneler monteras tillbaka som originalet. Det syns inte utifrån — men det märks på lång sikt.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-num">02</div>
+        <h3>Rätt från start</h3>
+        <p>Jag hjälper dig välja rätt utrustning innan vi börjar — inte den dyraste, utan den som faktiskt passar din bil, din musik och din budget.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-num">03</div>
+        <h3>Full transparens</h3>
+        <p>Du får alltid en offert innan arbetet börjar. Inga dolda timmar, inga överraskningar när du kommer och hämtar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline-section">
+    <h2>Resan hit</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">Tidigt</div>
+        <div class="timeline-content">
+          <h4>Första installationen</h4>
+          <p>En begagnad Pioneer-stereo och ett billigt subwooferpaket i familjens gamla Volvo 850. Det lät inte fantastiskt — men gnistan var tänd.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">Under åren</div>
+        <div class="timeline-content">
+          <h4>Jobb på jobb</h4>
+          <p>Vänner, bekanta och deras bekanta. Varje installation lärde mig något nytt — om kabeldragning, om bilars elarkitektur, om hur man integrerar aftermarket med OEM-system.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">Nu</div>
+        <div class="timeline-content">
+          <h4>Svalbergs Bilteknik</h4>
+          <p>Det som började som ett hobby har blivit ett riktigt företag. Jag tar emot kunder, ger offerter och utför alla installationer själv — med samma engagemang som dag ett.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="brands-section">
+    <h2>Märken jag jobbar med</h2>
+    <p>Några av de leverantörer och märken jag installerar och rekommenderar.</p>
+    <div class="brand-list">
+      <span class="brand-tag">Alpine</span>
+      <span class="brand-tag">Pioneer</span>
+      <span class="brand-tag">JL Audio</span>
+      <span class="brand-tag">Focal</span>
+      <span class="brand-tag">Kenwood</span>
+      <span class="brand-tag">Hertz</span>
+      <span class="brand-tag">Rockford Fosgate</span>
+      <span class="brand-tag">Helix</span>
+      <span class="brand-tag">Sony</span>
+      <span class="brand-tag">Skar Audio</span>
+      <span class="brand-tag">Stinger</span>
+      <span class="brand-tag">SoundStream</span>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <div>
+      <h3>Låt oss ta ett snack</h3>
+      <p>Berätta om din bil och vad du drömmer om — jag hjälper dig ta det därifrån.</p>
+    </div>
+    <a href="boka.html" class="btn-primary">Boka konsultation</a>
+  </div>
+
+</main>
+
+<footer>
+  <div class="logo">Svalbergs<span> Bilteknik</span></div>
+  <p>© <span id="yr"></span> Svalbergs Bilteknik. Installation i Sverige.</p>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="index.html">Hem</a>
+    <a href="tjanster.html">Tjänster</a>
+    <a href="galleri.html">Galleri</a>
+    <a href="boka.html">Boka</a>
+  </div>
+</footer>
+<script>
+/* Hamburger menu */
+(function() {
+  const btn = document.getElementById('hamburger');
+  const menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function() {
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  });
+  menu.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      btn.classList.remove('open');
+      menu.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+})();
+</script>
+<script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
+</body>
+</html>

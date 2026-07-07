@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prislista – Svalbergs Bilteknik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --carbon: #0D0D0F;
+    --steel: #1A1C22;
+    --panel: #22252D;
+    --ice: #3DDFFF;
+    --ice-dim: rgba(61,223,255,0.12);
+    --ice-border: rgba(61,223,255,0.3);
+    --tungsten: #C8C0B4;
+    --white: #F5F5F5;
+    --muted: #6E7380;
+    --divider: rgba(255,255,255,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--carbon);
+    color: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 2.5rem;
+    background: rgba(13,13,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--ice); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tungsten);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a.active { color: var(--ice); }
+
+  .nav-cta {
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    color: var(--carbon) !important;
+    background: var(--ice);
+    padding: 0.5rem 1.2rem;
+    border-radius: 2px;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* PAGE HERO */
+  .page-hero {
+    padding: 9rem 2.5rem 4rem;
+    background: var(--steel);
+    border-bottom: 1px solid var(--divider);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 50% 80% at 80% 50%, rgba(61,223,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .page-hero-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ice);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .page-hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 1.5rem;
+    height: 1px;
+    background: var(--ice);
+  }
+
+  .page-hero h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 6rem);
+    text-transform: uppercase;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+  }
+
+  .page-hero p {
+    margin-top: 1.2rem;
+    color: var(--tungsten);
+    max-width: 500px;
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  /* CONTENT */
+  main { padding: 5rem 2.5rem; max-width: 1100px; margin: 0 auto; }
+
+  .note-bar {
+    background: var(--ice-dim);
+    border: 1px solid var(--ice-border);
+    border-radius: 3px;
+    padding: 1rem 1.4rem;
+    font-size: 0.85rem;
+    color: var(--tungsten);
+    margin-bottom: 3.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .note-bar::before {
+    content: 'i';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    border: 1px solid var(--ice);
+    color: var(--ice);
+    font-size: 0.72rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+
+  .price-section { margin-bottom: 4rem; }
+
+  .price-section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--divider);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .price-section-title .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ice);
+    flex-shrink: 0;
+  }
+
+  .price-table { width: 100%; border-collapse: collapse; }
+
+  .price-table tr {
+    border-bottom: 1px solid var(--divider);
+    transition: background 0.15s;
+  }
+
+  .price-table tr:hover { background: rgba(255,255,255,0.02); }
+  .price-table tr:last-child { border-bottom: none; }
+
+  .price-table td {
+    padding: 1rem 0.5rem;
+    font-size: 0.9rem;
+    vertical-align: top;
+  }
+
+  .price-table td:first-child {
+    color: var(--white);
+    font-weight: 500;
+    width: 45%;
+  }
+
+  .price-table td:nth-child(2) {
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .price-table td:last-child {
+    text-align: right;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--ice);
+    white-space: nowrap;
+    padding-left: 1.5rem;
+  }
+
+  .price-badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+  .badge-popular {
+    background: var(--ice-dim);
+    color: var(--ice);
+    border: 1px solid var(--ice-border);
+  }
+  .badge-new {
+    background: rgba(44,185,122,0.12);
+    color: #2CB97A;
+    border: 1px solid rgba(44,185,122,0.3);
+  }
+
+  /* CTA BLOCK */
+  .cta-block {
+    background: var(--steel);
+    border: 1px solid var(--divider);
+    border-radius: 4px;
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .cta-block h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .cta-block p {
+    color: var(--tungsten);
+    font-size: 0.88rem;
+    max-width: 420px;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--carbon);
+    background: var(--ice);
+    padding: 0.85rem 2rem;
+    border-radius: 2px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  /* FOOTER */
+  footer {
+    background: var(--steel);
+    border-top: 1px solid var(--divider);
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  footer .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  footer .logo span { color: var(--ice); }
+  footer p { font-size: 0.78rem; color: var(--muted); }
+  footer a { color: var(--muted); text-decoration: none; font-size: 0.78rem; }
+  footer a:hover { color: var(--ice); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    main { padding: 3.5rem 1.5rem; }
+    .page-hero { padding: 7rem 1.5rem 3rem; }
+    .price-table td:nth-child(2) { display: none; }
+    .cta-block { flex-direction: column; align-items: flex-start; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* Mobile hamburger */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(13,13,15,0.98);
+    z-index: 99;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 2.8rem;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--ice); }
+  .mobile-menu .m-cta {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem !important;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--carbon) !important;
+    background: var(--ice);
+    padding: 0.85rem 2.5rem;
+    border-radius: 2px;
+    margin-top: 1rem;
+  }
+
+  /* Floating mobile CTA */
+  .float-cta {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 98;
+    background: var(--ice);
+    color: var(--carbon);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    width: 3.8rem;
+    height: 3.8rem;
+    border-radius: 50%;
+    box-shadow: 0 4px 24px rgba(61,223,255,0.35);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
+    transition: opacity 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .float-cta:hover {
+    opacity: 0.9;
+    box-shadow: 0 6px 30px rgba(61,223,255,0.5);
+    transform: scale(1.08);
+  }
+
+  @media (max-width: 900px) {
+    .hamburger { display: flex; }
+    .float-cta { display: flex; }
+  }
+
+  .social-link { color: var(--muted); transition: color 0.2s; display:flex;align-items:center; }
+  .social-link:hover { color: var(--ice); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Svalbergs<span> Bilteknik</span></a>
+  <ul class="nav-links">
+    <li><a href="tjanster.html">Tjänster</a></li>
+    <li><a href="galleri.html">Galleri</a></li>
+    <li><a href="prislista.html" class="active">Prislista</a></li>
+    <li><a href="om-oss.html">Om oss</a></li>
+    <li><a href="boka.html" class="nav-cta">Boka konsultation</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Meny">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="tjanster.html">Tjänster</a>
+  <a href="galleri.html">Galleri</a>
+  <a href="prislista.html">Prislista</a>
+  <a href="om-oss.html">Om oss</a>
+  <a href="boka.html" class="m-cta">Boka konsultation</a>
+</div>
+
+<!-- Floating mobile CTA -->
+<a href="boka.html" class="float-cta" aria-label="Boka konsultation">Boka</a>
+
+<div class="page-hero">
+  <div class="page-hero-label">Transparent prissättning</div>
+  <h1>Prislista</h1>
+  <p>Nedan hittar du vår prisguide för vanliga installationer. Slutpriset beror alltid på bil och utrustning — vi tar alltid fram en offert innan vi sätter igång.</p>
+</div>
+
+<main>
+
+  <div class="note-bar">
+    Alla priser avser arbetstid och enkel montering. Material och utrustning tillkommer om inget annat anges. Priser är inklusive moms. Offert ges alltid kostnadsfritt.
+  </div>
+
+  <!-- STEREO & LJUD -->
+  <div class="price-section">
+    <div class="price-section-title"><span class="dot"></span>Stereo &amp; Ljud</div>
+    <table class="price-table">
+      <tr>
+        <td>Bilstereo / Radio<span class="price-badge badge-popular">Populär</span></td>
+        <td>Montering av din stereo inkl. fascia och adapterkablar. CarPlay/Android Auto-aktivering ingår.</td>
+        <td>från 799 kr</td>
+      </tr>
+      <tr>
+        <td>Dörrhögtalare (par)</td>
+        <td>Montering av ett par högtalare i framdörrar eller bakdörrar. Inkl. eventuell anpassning av hållare.</td>
+        <td>från 499 kr</td>
+      </tr>
+      <tr>
+        <td>Koaxialhögtalare, alla fyra</td>
+        <td>Fram och bak, inkl. adaptrar och kabelanslutning.</td>
+        <td>från 899 kr</td>
+      </tr>
+      <tr>
+        <td>Subwoofer i koffert</td>
+        <td>Montering och kabelanslutning till befintlig förstärkare. Ny kabelinstallation tillkommer vid behov.</td>
+        <td>från 599 kr</td>
+      </tr>
+      <tr>
+        <td>Subwoofer under säte</td>
+        <td>Kompakta under-sätes-subs, diskret och platssparande.</td>
+        <td>från 499 kr</td>
+      </tr>
+      <tr>
+        <td>Förstärkare<span class="price-badge badge-popular">Populär</span></td>
+        <td>Montering, inställning och kalibrering. Effektledning tillkommer separat.</td>
+        <td>från 799 kr</td>
+      </tr>
+      <tr>
+        <td>DSP – Digital signalprocessor</td>
+        <td>Installation och grundkalibrering av DSP. Fintuning mot tillgänglig musiksmak ingår.</td>
+        <td>från 1 199 kr</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- EFFEKTLEDNING -->
+  <div class="price-section">
+    <div class="price-section-title"><span class="dot"></span>Effektledning &amp; El</div>
+    <table class="price-table">
+      <tr>
+        <td>Effektledning, grundpaket</td>
+        <td>4 AWG kabel från batteri till förstärkare inkl. säkringsbox och jordledning, upp till 4 meter.</td>
+        <td>från 699 kr</td>
+      </tr>
+      <tr>
+        <td>Effektledning, storpaket</td>
+        <td>1/0 AWG för stora system. Inkl. distribution och ordentlig jordning.</td>
+        <td>från 1 099 kr</td>
+      </tr>
+      <tr>
+        <td>Extraljus / arbetsbelysning</td>
+        <td>Elinstallation till extra strålkastare eller arbetsljus med relä och säkring.</td>
+        <td>från 499 kr</td>
+      </tr>
+      <tr>
+        <td>Batteri upgrade / dubbelbatteri</td>
+        <td>Installation av auxbatteri med separeringsrelä. Perfekt för bil med tung ljudutrustning.</td>
+        <td>från 999 kr</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- SKÄRMAR & KAMEROR -->
+  <div class="price-section">
+    <div class="price-section-title"><span class="dot"></span>Skärmar &amp; Kameror</div>
+    <table class="price-table">
+      <tr>
+        <td>Backkamera</td>
+        <td>Montering av backkamera och kabeldragning till stereon. Fungerar med de flesta aftermarket-enheter.</td>
+        <td>från 599 kr</td>
+      </tr>
+      <tr>
+        <td>Dashcam, enkel lins</td>
+        <td>Diskret montering med dold kabeldragning till säkringslådan. Alltid på när bilen startar.</td>
+        <td>från 499 kr</td>
+      </tr>
+      <tr>
+        <td>Dashcam, fram + bak<span class="price-badge badge-popular">Populär</span></td>
+        <td>Komplett system med dold kabel längs taklinjen. Parkeringsläge kan aktiveras.</td>
+        <td>från 799 kr</td>
+      </tr>
+      <tr>
+        <td>Nackstödsskärmar (par)</td>
+        <td>Montering av ett par skärmar i framsätenas nackstöd, inkl. anslutning till stereon.</td>
+        <td>från 899 kr</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- LJUDISOLERING -->
+  <div class="price-section">
+    <div class="price-section-title"><span class="dot"></span>Ljudisolering</div>
+    <table class="price-table">
+      <tr>
+        <td>Dörrdämpning, ett par</td>
+        <td>Dörrbladets innersida täcks med CLD-matta (constrained layer damping). Tydlig skillnad i basåtergivning.</td>
+        <td>från 799 kr</td>
+      </tr>
+      <tr>
+        <td>Dörrdämpning, alla fyra dörrar</td>
+        <td>Komplett behandling av alla dörrar. Material tillkommer beroende på bilmodell.</td>
+        <td>från 1 499 kr</td>
+      </tr>
+      <tr>
+        <td>Golvdämpning</td>
+        <td>Behandling av hela golvytan under mattorna med CLD + MLV. Minskar vägbuller kraftigt.</td>
+        <td>från 1 299 kr</td>
+      </tr>
+      <tr>
+        <td>Helpaket – dörrar + golv + tak<span class="price-badge badge-new">Paket</span></td>
+        <td>Komplett ljudisolering av hela interiören. Mest effektiva lösningen för tyst kabinmiljö.</td>
+        <td>offert</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- LED & BELYSNING -->
+  <div class="price-section">
+    <div class="price-section-title"><span class="dot"></span>LED &amp; Ambient-belysning</div>
+    <table class="price-table">
+      <tr>
+        <td>Ambient LED, interiör</td>
+        <td>LED-lister i fotutrymme, dörrar eller takbåge. RGB eller vitt, synkroniseras gärna med musiken.</td>
+        <td>från 599 kr</td>
+      </tr>
+      <tr>
+        <td>Undercarriage LED</td>
+        <td>LED-lister monterade längs bilens undersida. Väder- och stöttåliga. Inkl. fjärrkontroll.</td>
+        <td>från 799 kr</td>
+      </tr>
+      <tr>
+        <td>LED-konvertering, strålkastare</td>
+        <td>Byte till LED-kit i befintliga strålkastare. Godkänt utförande för besiktning.</td>
+        <td>från 499 kr</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- FELSÖKNING & REPARATION -->
+  <div class="price-section">
+    <div class="price-section-title"><span class="dot"></span>Felsökning, Reparation &amp; Ändringar</div>
+    <table class="price-table">
+      <tr>
+        <td>Felsökning<span class="price-badge badge-popular">Vanlig</span></td>
+        <td>Vi går igenom ditt befintliga system, hittar felet och ger dig en rapport. Arbetstiden för felsökning dras av om du väljer att låta oss åtgärda felet samma dag.</td>
+        <td>495 kr/tim</td>
+      </tr>
+      <tr>
+        <td>Reparation av befintlig installation</td>
+        <td>Lösa kablar, kortslutning, dålig jordning, defekt komponent — vi reparerar andras arbete utan att döma.</td>
+        <td>495 kr/tim</td>
+      </tr>
+      <tr>
+        <td>Ändring / uppgradering av befintligt system</td>
+        <td>Vill du lägga till en kanal, byta ut en komponent eller ändra hur något är kopplat? Vi jobbar vidare på det du redan har.</td>
+        <td>495 kr/tim</td>
+      </tr>
+      <tr>
+        <td>Ommontage / borttagning</td>
+        <td>Tar bort befintlig utrustning och återställer till standard, t.ex. inför bilförsäljning eller ny ägare.</td>
+        <td>från 499 kr</td>
+      </tr>
+      <tr>
+        <td>Kalibrering &amp; inställning<span class="price-badge badge-new">Populär</span></td>
+        <td>Har du ett system som inte låter som det borde? Vi kalibrerar gain-struktur, crossover och EQ utan att röra kablarna.</td>
+        <td>från 699 kr</td>
+      </tr>
+      <tr>
+        <td>Mikrofon-kalibrering med UMIK-1</td>
+        <td>Vi mäter ditt systems frekvensrespons med en kalibrerad UMIK-1-mätmikrofon och justerar DSP/EQ baserat på verkliga data — inte på gehör. Resultatet är ett objektivt, platt och balanserat ljud i kabinen.</td>
+        <td>från 499 kr</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="cta-block">
+    <div>
+      <h3>Osäker på vad du behöver?</h3>
+      <p>Vi hjälper dig välja rätt utrustning för din bil och din budget. Konsultationen är kostnadsfri och utan förpliktelser.</p>
+    </div>
+    <a href="boka.html" class="btn-primary">Boka gratis konsultation</a>
+  </div>
+
+</main>
+
+<footer>
+  <div class="logo">Svalbergs<span> Bilteknik</span></div>
+  <p>© <span id="yr"></span> Svalbergs Bilteknik. Installation i Sverige.</p>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="index.html">Hem</a>
+    <a href="galleri.html">Galleri</a>
+    <a href="boka.html">Kontakt</a>
+  </div>
+</footer>
+
+<script>
+/* Hamburger menu */
+(function() {
+  const btn = document.getElementById('hamburger');
+  const menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function() {
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  });
+  menu.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      btn.classList.remove('open');
+      menu.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+})();
+</script>
+<script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
+</body>
+</html>
