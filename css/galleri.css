@@ -1,0 +1,74 @@
+/* Svalbergs Bilteknik – galleri.css */
+
+.filters { padding: 2.5rem 2.5rem 0; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.filter-btn {
+  font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  background: transparent; border: 1px solid var(--divider); border-radius: 2px;
+  padding: 0.5rem 1.1rem; cursor: pointer; transition: all 0.15s;
+}
+.filter-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+.filter-btn.active { color: var(--carbon); background: var(--ice); border-color: var(--ice); }
+
+main { padding: 2.5rem 2.5rem 5rem; }
+
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+.gallery-item { position: relative; overflow: hidden; aspect-ratio: 4/3; background: var(--panel); cursor: pointer; }
+.gallery-item.tall { grid-row: span 2; aspect-ratio: auto; }
+.gallery-item.wide { grid-column: span 2; }
+
+.gallery-placeholder {
+  width: 100%; height: 100%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 1rem; background: var(--panel);
+}
+.gallery-placeholder svg { opacity: 0.15; width: 2.5rem; height: 2.5rem; }
+.gallery-placeholder span { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); opacity: 0.6; }
+
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease, opacity 0.3s; }
+
+.gallery-overlay {
+  position: absolute; inset: 0; background: rgba(13,13,15,0.75);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 1.2rem; opacity: 0; transition: opacity 0.25s;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-item:hover img { transform: scale(1.04); }
+
+.overlay-tag { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ice); margin-bottom: 0.3rem; }
+.overlay-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; color: var(--white); }
+
+.upload-hint {
+  background: var(--steel); border: 1px dashed rgba(255,255,255,0.15);
+  border-radius: 4px; padding: 2.5rem; text-align: center; margin-top: 3px;
+}
+.upload-hint h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.3rem; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--tungsten); }
+.upload-hint p { font-size: 0.85rem; color: var(--muted); max-width: 400px; margin: 0 auto; line-height: 1.7; }
+.upload-hint code { font-family: monospace; font-size: 0.8rem; background: var(--panel); padding: 0.2rem 0.5rem; border-radius: 3px; color: var(--ice); }
+
+.lightbox {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(13,13,15,0.95); align-items: center; justify-content: center; padding: 2rem;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 2px; }
+.lightbox-close {
+  position: fixed; top: 1.5rem; right: 2rem; background: none;
+  border: 1px solid var(--divider); color: var(--tungsten); font-size: 1.5rem;
+  cursor: pointer; width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; transition: color 0.15s, border-color 0.15s;
+}
+.lightbox-close:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+.lightbox-meta { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); text-align: center; }
+.lightbox-meta .tag { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ice); }
+.lightbox-meta .title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.2rem; text-transform: uppercase; color: var(--white); }
+
+@media (max-width: 900px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .gallery-item.tall, .gallery-item.wide { grid-row: auto; grid-column: auto; aspect-ratio: 4/3; }
+  .filters { padding: 2rem 1.5rem 0; }
+  main { padding: 2rem 1.5rem 4rem; }
+}
+@media (max-width: 500px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+}
