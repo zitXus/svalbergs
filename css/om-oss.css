@@ -36,8 +36,8 @@ main { max-width: 1000px; margin: 0 auto; padding: 5rem 2.5rem; }
 .timeline::before { content: ''; position: absolute; left: 3.5rem; top: 0; bottom: 0; width: 1px; background: var(--divider); }
 .timeline-item { display: grid; grid-template-columns: 7rem 1fr; gap: 2rem; padding: 1.8rem 0; border-bottom: 1px solid var(--divider); position: relative; }
 .timeline-item:last-child { border-bottom: none; }
-.timeline-year { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--ice); text-align: right; padding-right: 2rem; position: relative; padding-top: 0.1rem; }
-.timeline-year::after { content: ''; position: absolute; right: -0.35rem; top: 0.55rem; width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--ice); border: 2px solid var(--carbon); }
+.timeline-year { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--ice); text-align: right; padding-right: 2.2rem; position: relative; padding-top: 0.15rem; }
+.timeline-year::after { content: ''; position: absolute; right: -0.4rem; top: 0.5rem; width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--ice); border: 2px solid var(--steel); box-shadow: 0 0 0 1px var(--ice); }
 .timeline-content h4 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--white); }
 .timeline-content p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
 

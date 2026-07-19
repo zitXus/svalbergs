@@ -73,114 +73,98 @@
 <main>
   <div class="gallery-grid" id="gallery">
 
-    <!-- Each item has data-cat for filtering. src="..." → replace with your real photo paths -->
-
-    <div class="gallery-item tall" data-cat="stereo" data-title="Alpine iLX-W690D" data-tag="Stereo">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="14" width="36" height="20" rx="3" stroke="white" stroke-width="1.8"/><circle cx="24" cy="24" r="5" stroke="white" stroke-width="1.8"/><circle cx="24" cy="24" r="2" fill="white"/></svg>
-        <span>Lägg till foto</span>
-      </div>
-      <div class="gallery-overlay">
-        <div class="overlay-tag">Stereo</div>
-        <div class="overlay-title">Alpine iLX-W690D</div>
-      </div>
+    <!-- Each item has data-cat for filtering. Add img/ files to fill placeholders -->
+    <!-- ── STEREO ───────────────────────────────────────── -->
+    <div class="gallery-item tall" data-cat="stereo" data-title="Diskantpoddar i A-stolpe, Hyundai i30" data-tag="Stereo">
+      <img src="img/tweeter-pods-apillar.jpg" alt="Diskantpoddar i A-stolpe" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Stereo</div><div class="overlay-title">Diskantpoddar i A-stolpe, Hyundai i30</div></div>
     </div>
 
-    <div class="gallery-item" data-cat="bas" data-title="JL Audio 12W6v3" data-tag="Subwoofer">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="14" stroke="white" stroke-width="1.8"/><circle cx="24" cy="24" r="6" stroke="white" stroke-width="1.8"/></svg>
-        <span>Lägg till foto</span>
-      </div>
-      <div class="gallery-overlay">
-        <div class="overlay-tag">Subwoofer</div>
-        <div class="overlay-title">JL Audio 12W6v3</div>
-      </div>
+    <div class="gallery-item" data-cat="stereo" data-title="Kenwood installation, Hyundai i30" data-tag="Stereo">
+      <img src="img/kenwood-install.jpg" alt="Kenwood stereo under installation" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Stereo</div><div class="overlay-title">Kenwood installation, Hyundai i30</div></div>
     </div>
 
-    <div class="gallery-item" data-cat="ljus" data-title="Ambient LED interiör" data-tag="Belysning">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="6" stroke="white" stroke-width="1.8"/><path d="M24 8V12M24 36V40M8 24H12M36 24H40" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>Lägg till foto</span>
-      </div>
-      <div class="gallery-overlay">
-        <div class="overlay-tag">Belysning</div>
-        <div class="overlay-title">Ambient LED interiör</div>
-      </div>
+    <div class="gallery-item" data-cat="stereo" data-title="Kabelkoppling, Renault Clio V" data-tag="Stereo">
+      <img src="img/wiring-detail.jpg" alt="Kabelkoppling och kontakter" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Stereo</div><div class="overlay-title">Kabelkoppling DSP, Renault Clio V</div></div>
     </div>
 
-    <div class="gallery-item wide" data-cat="skarm" data-title="10" Android-stereo, Volvo V70" data-tag="Skärmar">
+<!--     <div class="gallery-item" data-cat="stereo" data-title="Bilstereo-installation" data-tag="Stereo">
       <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="10" width="32" height="24" rx="2" stroke="white" stroke-width="1.8"/><line x1="16" y1="38" x2="32" y2="38" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="14" width="36" height="20" rx="3" stroke="white" stroke-width="1.8"/><circle cx="24" cy="24" r="5" stroke="white" stroke-width="1.8"/></svg>
         <span>Lägg till foto</span>
       </div>
-      <div class="gallery-overlay">
-        <div class="overlay-tag">Skärmar</div>
-        <div class="overlay-title">10" Android-stereo, Volvo V70</div>
-      </div>
+      <div class="gallery-overlay"><div class="overlay-tag">Stereo</div><div class="overlay-title">Bilstereo-installation</div></div>
+    </div> -->
+
+    <!-- ── BAS & FÖRSTÄRKARE ──────────────────────────── -->
+    <div class="gallery-item" data-cat="bas" data-title="Subwoofer i koffert, Hyundai i30" data-tag="Subwoofer">
+      <img src="img/subwoofer-boot.jpg" alt="Subwoofer i koffert" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Subwoofer</div><div class="overlay-title">Subwoofer i koffert, Hyundai i30</div></div>
     </div>
 
-    <div class="gallery-item" data-cat="isolering" data-title="Dörrdämpning, BMW 3-serie" data-tag="Isolering">
+    <div class="gallery-item wide" data-cat="bas" data-title="Förstärkare & DSP i koffert" data-tag="Subwoofer">
+      <img src="img/amp-dsp-boot.jpg" alt="Förstärkare och DSP monterade i koffert" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Subwoofer</div><div class="overlay-title">Förstärkare & DSP i koffert, Clio V</div></div>
+    </div>
+
+    <!-- ── EFFEKTLEDNING ──────────────────────────────── -->
+    <div class="gallery-item" data-cat="bas" data-title="Kabeldragning & effektledning, Hyundai i30" data-tag="Subwoofer">
+      <img src="img/tjanst-effektledning.jpg" alt="Effektledning och kablar, Hyundai i30" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Effektledning</div><div class="overlay-title">Effektledning, Hyundai i30</div></div>
+    </div>
+
+    <div class="gallery-item" data-cat="bas" data-title="OFC-kabel tvärsnittsvy" data-tag="Subwoofer">
+      <img src="img/galleri-kabel-tvarsnitt.jpg" alt="OFC-kabel tvärsnittsvy" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Effektledning</div><div class="overlay-title">OFC-kabel tvärsnittsvy</div></div>
+    </div>
+
+<!--     <div class="gallery-item wide" data-cat="bas" data-title="Kabeldragning & signal, Renault Clio" data-tag="Subwoofer">
+      <img src="img/galleri-kabeldragning.jpg" alt="Kabeldragning och signalkablar" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Effektledning</div><div class="overlay-title">Kabeldragning & signal, Renault Clio</div></div>
+    </div> -->
+
+    <!-- ── ISOLERING ──────────────────────────────────── -->
+    <div class="gallery-item" data-cat="isolering" data-title="Golvdämpning, Hyundai ix35" data-tag="Isolering">
+      <img src="img/galleri-isolering2.jpg" alt="Golvdämpning, Hyundai ix35" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Isolering</div><div class="overlay-title">Golvdämpning, Hyundai ix35</div></div>
+    </div>
+
+    <div class="gallery-item tall" data-cat="isolering" data-title="Takisolering, Hyundai i30" data-tag="Isolering">
+      <img src="img/galleri-takisolering.jpg" alt="Takisolering, Hyundai i30" loading="lazy">
+      <div class="gallery-overlay"><div class="overlay-tag">Isolering</div><div class="overlay-title">Takisolering, Hyundai i30</div></div>
+    </div>
+
+<!--     <div class="gallery-item" data-cat="isolering" data-title="Dörrdämpning" data-tag="Isolering">
       <div class="gallery-placeholder">
         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 16C12 16 8 20 8 26C8 32 12 36 12 36" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M36 16C36 16 40 20 40 26C40 32 36 36 36 36" stroke="white" stroke-width="1.8" stroke-linecap="round"/><rect x="17" y="20" width="14" height="12" rx="2" stroke="white" stroke-width="1.8"/></svg>
-        <span>Lägg till foto</span>
+        <span>Lägg till foto → img/galleri-dörrdämpning.jpg</span>
       </div>
-      <div class="gallery-overlay">
-        <div class="overlay-tag">Isolering</div>
-        <div class="overlay-title">Dörrdämpning, BMW 3-serie</div>
-      </div>
-    </div>
+      <div class="gallery-overlay"><div class="overlay-tag">Isolering</div><div class="overlay-title">Dörrdämpning</div></div>
+    </div> -->
 
-    <div class="gallery-item" data-cat="bas" data-title="Focal Flax Sub + förstärkare" data-tag="Subwoofer">
+    <!-- ── BELYSNING ──────────────────────────────────── -->
+<!--     <div class="gallery-item" data-cat="ljus" data-title="Extra belysning" data-tag="Belysning">
       <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="14" stroke="white" stroke-width="1.8"/><circle cx="24" cy="24" r="5" stroke="white" stroke-width="1.8"/><circle cx="24" cy="24" r="2" fill="white"/></svg>
-        <span>Lägg till foto</span>
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="6" stroke="white" stroke-width="1.8"/><path d="M24 8V12M24 36V40M8 24H12M36 24H40" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Lägg till foto → img/galleri-led.jpg</span>
       </div>
-      <div class="gallery-overlay">
-        <div class="overlay-tag">Subwoofer</div>
-        <div class="overlay-title">Focal Flax Sub + förstärkare</div>
-      </div>
-    </div>
+      <div class="gallery-overlay"><div class="overlay-tag">Belysning</div><div class="overlay-title">Extra belysning</div></div>
+    </div> -->
 
-    <div class="gallery-item" data-cat="stereo" data-title="Pioneer SPH-EVO93DAB, Toyota" data-tag="Stereo">
+    <!-- ── SKÄRMAR ────────────────────────────────────── -->
+<!--     <div class="gallery-item wide" data-cat="skarm" data-title="Skärminstallation" data-tag="Skärmar">
       <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="14" width="36" height="20" rx="3" stroke="white" stroke-width="1.8"/><line x1="8" y1="24" x2="13" y2="24" stroke="white" stroke-width="1.8" stroke-linecap="round"/><line x1="35" y1="24" x2="40" y2="24" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>Lägg till foto</span>
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="10" width="32" height="24" rx="2" stroke="white" stroke-width="1.8"/><line x1="16" y1="38" x2="32" y2="38" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Lägg till foto → img/galleri-skarm.jpg</span>
       </div>
-      <div class="gallery-overlay">
-        <div class="overlay-tag">Stereo</div>
-        <div class="overlay-title">Pioneer SPH-EVO93DAB, Toyota</div>
-      </div>
-    </div>
-
-    <div class="gallery-item" data-cat="ljus" data-title="Undercarriage LED, Audi A4" data-tag="Belysning">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="6" stroke="white" stroke-width="1.8"/><path d="M24 8V12M24 36V40M8 24H12M36 24H40M12.7 12.7L15.5 15.5M32.5 32.5L35.3 35.3" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>Lägg till foto</span>
-      </div>
-      <div class="gallery-overlay">
-        <div class="overlay-tag">Belysning</div>
-        <div class="overlay-title">Undercarriage LED, Audi A4</div>
-      </div>
-    </div>
-
-    <div class="gallery-item wide" data-cat="bas" data-title="Effektledning & förstärkare, Mercedes" data-tag="Subwoofer">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 38L14 12H34L38 38H10Z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 20H34" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>Lägg till foto</span>
-      </div>
-      <div class="gallery-overlay">
-        <div class="overlay-tag">Subwoofer</div>
-        <div class="overlay-title">Effektledning & förstärkare, Mercedes</div>
-      </div>
-    </div>
+      <div class="gallery-overlay"><div class="overlay-tag">Skärmar</div><div class="overlay-title">Skärminstallation</div></div>
+    </div> -->
 
   </div>
 
-  <!-- How to add photos -->
-  <div class="upload-hint">
-    <h3>Lägg till dina egna bilder</h3>
-    <p>Ersätt platshållarna med riktiga foton från dina installationer. Byt ut <code>&lt;div class="gallery-placeholder"&gt;</code> mot en <code>&lt;img src="minfoto.jpg"&gt;</code> i koden. Döp bildfilerna med installatioinstypen, t.ex. <code>volvo-subwoofer-01.jpg</code>.</p>
-  </div>
+  <!-- Fler bilder läggs till i img/ mappen och refereras med <img src="img/filnamn.jpg"> -->
 
   <div class="cta-block">
     <div>
