@@ -6,7 +6,6 @@
 <title>Galleri – Svalbergs Bilteknik</title>
 <meta name="description" content="Se bilder från tidigare installationer — bilstereo, subwoofers, belysning och mer.">
 <link rel="canonical" href="https://www.svalbergs.se/galleri.html">
-<!-- Open Graph -->
 <meta property="og:type"        content="website">
 <meta property="og:site_name"   content="Svalbergs Bilteknik">
 <meta property="og:url"         content="https://www.svalbergs.se/galleri.html">
@@ -16,20 +15,261 @@
 <meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale"      content="sv_SE">
-<!-- Twitter/X -->
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:title"       content="Galleri – Svalbergs Bilteknik">
 <meta name="twitter:description" content="Se bilder från tidigare installationer — bilstereo, subwoofers, belysning och mer.">
 <meta name="twitter:image"       content="https://www.svalbergs.se/img/og-image.jpg">
-<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<!-- CSS -->
 <link rel="stylesheet" href="css/shared.css">
 <link rel="stylesheet" href="css/galleri.css">
+<style>
+/* ── Project stack cards ─────────────────────────── */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.project-card {
+  background: var(--steel);
+  border: 1px solid var(--divider);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  position: relative;
+}
+.project-card:hover {
+  border-color: var(--ice-border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(-3px);
+}
+
+/* Stacked thumbnail effect */
+.project-thumb {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+.project-thumb img,
+.project-thumb .gallery-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.4s;
+}
+/* Video thumbnails */
+.project-thumb video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* play overlay removed per user preference (no visible play button) */
+/* Stack peek — show corners of images underneath */
+.project-thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(13,13,15,0.85) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Image counter badge */
+.project-count {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 3;
+  background: rgba(13,13,15,0.75);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  backdrop-filter: blur(4px);
+}
+.project-count svg { width: 0.8rem; height: 0.8rem; stroke: var(--ice); fill: none; stroke-width: 2; }
+
+/* Stacked card effect (multiple images peek from behind) */
+.project-stack {
+  position: relative;
+}
+.project-stack::before,
+.project-stack::after {
+  content: '';
+  position: absolute;
+  left: 6px; right: 6px;
+  border-radius: 6px;
+  background: var(--panel);
+  border: 1px solid var(--divider);
+  z-index: -1;
+}
+.project-stack::before { bottom: -5px; height: 8px; opacity: 0.7; }
+.project-stack::after  { bottom: -9px; height: 8px; left: 12px; right: 12px; opacity: 0.4; }
+
+/* Project meta */
+.project-meta {
+  padding: 1.1rem 1.3rem;
+}
+.project-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ice);
+  opacity: 0.8;
+  margin-bottom: 0.35rem;
+}
+.project-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 0.3rem;
+}
+.project-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ── Slideshow lightbox ────────────────────────────── */
+.slideshow {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(13,13,15,0.97);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.slideshow.open { display: flex; }
+
+.slideshow-img-wrap {
+  position: relative;
+  max-width: 90vw;
+  max-height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slideshow-img-wrap img {
+  max-width: 90vw;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 3px;
+  display: block;
+}
+/* Slideshow video styles */
+#slideshowVideo {
+  max-width: 90vw;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 3px;
+  display: none;
+}
+
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(13,13,15,0.7);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--white);
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.15s, border-color 0.15s;
+  z-index: 5;
+}
+.slide-btn:hover { background: rgba(61,223,255,0.15); border-color: var(--ice-border); }
+.slide-btn.prev { left: -1.5rem; }
+.slide-btn.next { right: -1.5rem; }
+
+.slideshow-meta {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+.slideshow-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 0.3rem;
+}
+.slideshow-counter {
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.slideshow-dots {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+.slideshow-dots span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.slideshow-dots span.active { background: var(--ice); }
+
+.slideshow-close {
+  position: fixed;
+  top: 1.5rem;
+  right: 2rem;
+  background: none;
+  border: 1px solid var(--divider);
+  color: var(--tungsten);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, border-color 0.15s;
+}
+.slideshow-close:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+
+@media (max-width: 900px) {
+  .project-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .slide-btn.prev { left: 0.3rem; }
+  .slide-btn.next { right: 0.3rem; }
+}
+@media (max-width: 500px) {
+  .project-grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
-<body><nav>
+<body>
+
+<nav>
   <a href="index.html" class="nav-logo">Svalbergs<span> Bilteknik</span></a>
   <ul class="nav-links">
     <li><a href="tjanster.html">Tjänster</a></li>
@@ -42,8 +282,6 @@
     <span></span><span></span><span></span>
   </button>
 </nav>
-
-<!-- Mobile menu -->
 <div class="mobile-menu" id="mobileMenu">
   <a href="tjanster.html">Tjänster</a>
   <a href="galleri.html">Galleri</a>
@@ -51,122 +289,227 @@
   <a href="om-oss.html">Om oss</a>
   <a href="boka.html" class="m-cta">Boka konsultation</a>
 </div>
-
-<!-- Floating mobile CTA -->
 <a href="boka.html" class="float-cta" aria-label="Boka konsultation">Boka</a>
 
 <div class="page-hero">
   <div class="page-hero-label">Våra installationer</div>
   <h1>Galleri</h1>
-  <p>Bilder från tidigare jobb — bilstereo, subwoofers, skärmar, belysning och mer. Varje installation är unik och anpassad till bilen och ägaren.</p>
+  <p>Klicka på ett projekt för att se hela installationen steg för steg. Varje kort kan innehålla flera bilder.</p>
 </div>
 
 <div class="filters">
-  <button class="filter-btn active" onclick="filterGallery('alla', this)">Alla</button>
-  <button class="filter-btn" onclick="filterGallery('stereo', this)">Stereo</button>
-  <button class="filter-btn" onclick="filterGallery('bas', this)">Subwoofer</button>
-  <button class="filter-btn" onclick="filterGallery('skarm', this)">Skärmar</button>
-  <button class="filter-btn" onclick="filterGallery('ljus', this)">Belysning</button>
-  <button class="filter-btn" onclick="filterGallery('isolering', this)">Isolering</button>
+  <button class="filter-btn active" onclick="filterProjects('alla', this)">Alla</button>
+  <button class="filter-btn" onclick="filterProjects('stereo', this)">Stereo</button>
+  <button class="filter-btn" onclick="filterProjects('bas', this)">Subwoofer</button>
+  <button class="filter-btn" onclick="filterProjects('skarm', this)">Skärmar</button>
+  <button class="filter-btn" onclick="filterProjects('ljus', this)">Belysning</button>
+  <button class="filter-btn" onclick="filterProjects('isolering', this)">Isolering</button>
 </div>
 
 <main>
-  <div class="gallery-grid" id="gallery">
+  <div class="project-grid" id="projectGrid">
 
-    <!-- Each item has data-cat for filtering. Add img/ files to fill placeholders -->
-    <!-- ── STEREO ───────────────────────────────────────── -->
-    <div class="gallery-item tall" data-cat="stereo" data-title="Diskantpoddar i A-stolpe, Hyundai i30" data-tag="Stereo">
-      <img src="img/tweeter-pods-apillar.jpg" alt="Diskantpoddar i A-stolpe" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Stereo</div><div class="overlay-title">Diskantpoddar i A-stolpe, Hyundai i30</div></div>
-    </div>
+    <!--
+      HOW TO ADD A PROJECT:
+      Copy a project-card block, set data-cat, fill in images array in data-images
+      (comma-separated filenames from img/ folder), set title and description.
+      Single image = no stack effect. Multiple = slideshow on click.
+    -->
 
-    <div class="gallery-item" data-cat="stereo" data-title="Kenwood installation, Hyundai i30" data-tag="Stereo">
-      <img src="img/kenwood-install.jpg" alt="Kenwood stereo under installation" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Stereo</div><div class="overlay-title">Kenwood installation, Hyundai i30</div></div>
-    </div>
-
-    <div class="gallery-item" data-cat="stereo" data-title="Kabelkoppling, Renault Clio V" data-tag="Stereo">
-      <img src="img/wiring-detail.jpg" alt="Kabelkoppling och kontakter" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Stereo</div><div class="overlay-title">Kabelkoppling DSP, Renault Clio V</div></div>
-    </div>
-
-<!--     <div class="gallery-item" data-cat="stereo" data-title="Bilstereo-installation" data-tag="Stereo">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="14" width="36" height="20" rx="3" stroke="white" stroke-width="1.8"/><circle cx="24" cy="24" r="5" stroke="white" stroke-width="1.8"/></svg>
-        <span>Lägg till foto</span>
+    <!-- ── Renault Clio ─────── -->
+    <div class="project-card project-stack"
+         data-cat="stereo"
+         data-title="Renault Clio V"
+         data-tag="Stereo"
+         data-desc="Clio V med DLS signatur steg och DLS DSP monterat i koffert. Samt lättare Kabeldragning"
+         data-images="woofer-replacement.jpg,wiring-detail.jpg,amp-dsp-boot.jpg">
+      <div class="project-thumb">
+        <img src="img/woofer-replacement.jpg" alt="Renault Clio stereo installation" loading="lazy">
       </div>
-      <div class="gallery-overlay"><div class="overlay-tag">Stereo</div><div class="overlay-title">Bilstereo-installation</div></div>
-    </div> -->
-
-    <!-- ── BAS & FÖRSTÄRKARE ──────────────────────────── -->
-    <div class="gallery-item" data-cat="bas" data-title="Subwoofer i koffert, Hyundai i30" data-tag="Subwoofer">
-      <img src="img/subwoofer-boot.jpg" alt="Subwoofer i koffert" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Subwoofer</div><div class="overlay-title">Subwoofer i koffert, Hyundai i30</div></div>
-    </div>
-
-    <div class="gallery-item wide" data-cat="bas" data-title="Förstärkare & DSP i koffert" data-tag="Subwoofer">
-      <img src="img/amp-dsp-boot.jpg" alt="Förstärkare och DSP monterade i koffert" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Subwoofer</div><div class="overlay-title">Förstärkare & DSP i koffert, Clio V</div></div>
-    </div>
-
-    <!-- ── EFFEKTLEDNING ──────────────────────────────── -->
-    <div class="gallery-item" data-cat="bas" data-title="Kabeldragning & effektledning, Hyundai i30" data-tag="Subwoofer">
-      <img src="img/tjanst-effektledning.jpg" alt="Effektledning och kablar, Hyundai i30" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Effektledning</div><div class="overlay-title">Effektledning, Hyundai i30</div></div>
-    </div>
-
-    <div class="gallery-item" data-cat="bas" data-title="OFC-kabel tvärsnittsvy" data-tag="Subwoofer">
-      <img src="img/galleri-kabel-tvarsnitt.jpg" alt="OFC-kabel tvärsnittsvy" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Effektledning</div><div class="overlay-title">OFC-kabel tvärsnittsvy</div></div>
-    </div>
-
-<!--     <div class="gallery-item wide" data-cat="bas" data-title="Kabeldragning & signal, Renault Clio" data-tag="Subwoofer">
-      <img src="img/galleri-kabeldragning.jpg" alt="Kabeldragning och signalkablar" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Effektledning</div><div class="overlay-title">Kabeldragning & signal, Renault Clio</div></div>
-    </div> -->
-
-    <!-- ── ISOLERING ──────────────────────────────────── -->
-    <div class="gallery-item" data-cat="isolering" data-title="Golvdämpning, Hyundai ix35" data-tag="Isolering">
-      <img src="img/galleri-isolering2.jpg" alt="Golvdämpning, Hyundai ix35" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Isolering</div><div class="overlay-title">Golvdämpning, Hyundai ix35</div></div>
-    </div>
-
-    <div class="gallery-item tall" data-cat="isolering" data-title="Takisolering, Hyundai i30" data-tag="Isolering">
-      <img src="img/galleri-takisolering.jpg" alt="Takisolering, Hyundai i30" loading="lazy">
-      <div class="gallery-overlay"><div class="overlay-tag">Isolering</div><div class="overlay-title">Takisolering, Hyundai i30</div></div>
-    </div>
-
-<!--     <div class="gallery-item" data-cat="isolering" data-title="Dörrdämpning" data-tag="Isolering">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 16C12 16 8 20 8 26C8 32 12 36 12 36" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M36 16C36 16 40 20 40 26C40 32 36 36 36 36" stroke="white" stroke-width="1.8" stroke-linecap="round"/><rect x="17" y="20" width="14" height="12" rx="2" stroke="white" stroke-width="1.8"/></svg>
-        <span>Lägg till foto → img/galleri-dörrdämpning.jpg</span>
+      <div class="project-count">
+        <svg viewBox="0 0 16 16"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="5" y="5" width="9" height="9" rx="1"/></svg>
+        3 bilder
       </div>
-      <div class="gallery-overlay"><div class="overlay-tag">Isolering</div><div class="overlay-title">Dörrdämpning</div></div>
-    </div> -->
-
-    <!-- ── BELYSNING ──────────────────────────────────── -->
-<!--     <div class="gallery-item" data-cat="ljus" data-title="Extra belysning" data-tag="Belysning">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="6" stroke="white" stroke-width="1.8"/><path d="M24 8V12M24 36V40M8 24H12M36 24H40" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>Lägg till foto → img/galleri-led.jpg</span>
+      <div class="project-meta">
+        <div class="project-tag">Stereo</div>
+        <div class="project-title">Renault Clio V Högtalare och Kabeldragning</div>
+        <div class="project-desc">Kabelkoppling, Steg och kablar!</div>
       </div>
-      <div class="gallery-overlay"><div class="overlay-tag">Belysning</div><div class="overlay-title">Extra belysning</div></div>
-    </div> -->
+    </div>
 
-    <!-- ── SKÄRMAR ────────────────────────────────────── -->
-<!--     <div class="gallery-item wide" data-cat="skarm" data-title="Skärminstallation" data-tag="Skärmar">
-      <div class="gallery-placeholder">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="10" width="32" height="24" rx="2" stroke="white" stroke-width="1.8"/><line x1="16" y1="38" x2="32" y2="38" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>Lägg till foto → img/galleri-skarm.jpg</span>
+    <!-- ── Renault Clio – Subwoofer & Förstärkare ────── -->
+<!--     <div class="project-card project-stack"
+         data-cat="bas"
+         data-title="Renault Clio – Subwoofer & Förstärkare"
+         data-tag="Subwoofer"
+         data-desc="Subwoofer i koffert, förstärkare och DSP monterade och kalibrerade. Effektledning dragen längs kaross."
+         data-images="tjanst-subwoofer.jpg,tjanst-forstarkareDSP.jpg,galleri-kabeldragning.jpg">
+      <div class="project-thumb">
+        <img src="img/tjanst-subwoofer.jpg" alt="Subwoofer installation" loading="lazy">
       </div>
-      <div class="gallery-overlay"><div class="overlay-tag">Skärmar</div><div class="overlay-title">Skärminstallation</div></div>
+      <div class="project-count">
+        <svg viewBox="0 0 16 16"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="5" y="5" width="9" height="9" rx="1"/></svg>
+        3 bilder
+      </div>
+      <div class="project-meta">
+        <div class="project-tag">Subwoofer</div>
+        <div class="project-title">Renault Clio – Sub & Förstärkare</div>
+        <div class="project-desc">Sub i koffert, förstärkare + DSP, effektledning</div>
+      </div>
     </div> -->
 
+    <!-- ── Hyundai i30 – Effektledning ───────────────── -->
+    <div class="project-card project-stack"
+         data-cat="bas"
+         data-title="Hyundai i30 – Effektledning"
+         data-tag="Effektledning"
+         data-desc="OFC effektkabel och signalkablar dragna längs karossen i en Hyundai i30. Rätt dimensionerat för systemet."
+         data-images="tjanst-effektledning.jpg,galleri-kabel-tvarsnitt.jpg">
+      <div class="project-thumb">
+        <img src="img/tjanst-effektledning.jpg" alt="Effektledning Hyundai i30" loading="lazy">
+      </div>
+      <div class="project-count">
+        <svg viewBox="0 0 16 16"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="5" y="5" width="9" height="9" rx="1"/></svg>
+        2 bilder
+      </div>
+      <div class="project-meta">
+        <div class="project-tag">Effektledning</div>
+        <div class="project-title">Hyundai i30 – Effektledning</div>
+        <div class="project-desc">OFC-kabel, korrekt dimensionering, rent utförande</div>
+      </div>
+    </div>
+
+
+        <!-- ── Hyundai i30 – radio byte och kablar ───────────────── -->
+    <div class="project-card project-stack"
+         data-cat="stereo"
+         data-title="Hyundai i30 – Stereo och kablar samt poddar."
+         data-tag="Stereo"
+         data-desc="Signalkablar dragna längs karossen i en Hyundai i30. Samt installation av ny stereoenhet och poddar."
+         data-images="tweeter-pods-apillar.jpg,kenwood-install.jpg,wiring-harness.jpg">
+      <div class="project-thumb">
+        <img src="img/tweeter-pods-apillar.jpg" alt="Stereoinstallation Hyundai i30" loading="lazy">
+      </div>
+      <div class="project-count">
+        <svg viewBox="0 0 16 16"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="5" y="5" width="9" height="9" rx="1"/></svg>
+        3 bilder
+      </div>
+      <div class="project-meta">
+        <div class="project-tag">Stereo</div>
+        <div class="project-title">Hyundai i30 – Stereo och kablar samt poddar</div>
+        <div class="project-desc">Signalkablar, ny stereoenhet och poddar</div>
+      </div>
+    </div>
+
+    <!-- ── Hyundai ix35 – Ljudisolering ──────────────── -->
+    <div class="project-card project-stack"
+         data-cat="isolering"
+         data-title="Hyundai ix35 & i30 – Ljudisolering"
+         data-tag="Isolering"
+         data-desc="2mm alu-butyl i golv och baklucka på en Hyundai ix35, samt takisolering i en Hyundai i30."
+         data-images="galleri-isolering2.jpg,galleri-takisolering.jpg">
+      <div class="project-thumb">
+        <img src="img/galleri-isolering2.jpg" alt="Golvdämpning Hyundai ix35" loading="lazy">
+      </div>
+      <div class="project-count">
+        <svg viewBox="0 0 16 16"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="5" y="5" width="9" height="9" rx="1"/></svg>
+        2 bilder
+      </div>
+      <div class="project-meta">
+        <div class="project-tag">Isolering</div>
+        <div class="project-title">Hyundai ix35 & i30 – Isolering</div>
+        <div class="project-desc">Golv, baklucka och tak behandlat med alu-butyl</div>
+      </div>
+    </div>
+
+
+       <!-- ── Hyundai ix35 – Radio byte  ──────────────── -->
+    <div class="project-card project-stack"
+         data-cat="stereo"
+         data-title="Hyundai ix35 - Macrom T1003DAB 10tum"
+         data-tag="Stereo"
+         data-desc="Byte av radio i en Hyundai ix35"
+         data-images="ix35-radio-install2.jpg,ix35-radio-install.jpg,macrom-screen.jpg">
+      <div class="project-thumb">
+        <img src="img/macrom-screen.jpg" alt="Radio Hyundai ix35" loading="lazy">
+      </div>
+      <div class="project-count">
+        <svg viewBox="0 0 16 16"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="5" y="5" width="9" height="9" rx="1"/></svg>
+        3 bilder
+      </div>
+      <div class="project-meta">
+        <div class="project-tag">Stereo</div>
+        <div class="project-title">Hyundai ix35 - Macrom T1003DAB 10tum</div>
+        <div class="project-desc">Byte av stereo i en Hyundai ix35</div>
+      </div>
+    </div>
+
+
+      <!-- ── Renault Clio V – Interiör ─────────────────── -->
+<div class="project-card project-stack"
+     data-cat="stereo"
+     data-title="Renault Clio V – Komplett interiörinstallation"
+     data-tag="Stereo"
+     data-desc="Komplett installation i en Renault Clio V — stereo, kablar, högtalare och mer."
+     data-images="clio-v-01.jpg,clio-v-02.jpg,clio-v-04.jpg,clio-v-05.jpg,clio-v-06.jpg,clio-v-07.jpg">
+  <div class="project-thumb">
+    <img src="img/clio-v-01.jpg" alt="Renault Clio V interiörinstallation" loading="lazy">
   </div>
+  <div class="project-count">
+    <svg viewBox="0 0 16 16"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="5" y="5" width="9" height="9" rx="1"/></svg>
+    6 bilder
+  </div>
+  <div class="project-meta">
+    <div class="project-tag">Stereo</div>
+    <div class="project-title">Renault Clio V – Interiör</div>
+    <div class="project-desc">Komplett installation, 6 bilder från hela processen</div>
+  </div>
+</div>
 
-  <!-- Fler bilder läggs till i img/ mappen och refereras med <img src="img/filnamn.jpg"> -->
 
-  <div class="cta-block">
+    <!-- ── Belysning – Led med video ────────────────────── -->
+    <div class="project-card"
+         data-cat="ljus"
+         data-title="Extra belysning"
+         data-tag="Belysning"
+         data-desc="Hyuindai i30 med ledramp, blixljus och flera lampor."
+         data-images="galleri-led.jpg">
+     <div class="project-thumb">
+       <video autoplay muted loop playsinline>
+         <source src="img/install-video.mp4" type="video/mp4">
+       </video>
+      
+      </div>
+      <div class="project-meta">
+        <div class="project-tag">Belysning</div>
+        <div class="project-title">Extra belysning</div>
+        <div class="project-desc">Ledramp med blixljus samt flera lampor, hel, halv, med mera!</div>
+      </div>
+    </div>
+
+    <!-- ── Skärmar – placeholder ──────────────────────── -->
+<!--     <div class="project-card"
+         data-cat="skarm"
+         data-title="Skärminstallation"
+         data-tag="Skärmar"
+         data-desc="Lägg till bilder i img/ för att visa detta projekt."
+         data-images="galleri-skarm.jpg">
+      <div class="project-thumb">
+        <div class="gallery-placeholder">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="10" width="32" height="24" rx="2" stroke="white" stroke-width="1.8"/><line x1="16" y1="38" x2="32" y2="38" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span>→ img/galleri-skarm.jpg</span>
+        </div>
+      </div>
+      <div class="project-meta">
+        <div class="project-tag">Skärmar</div>
+        <div class="project-title">Skärminstallation</div>
+        <div class="project-desc">Lägg till galleri-skarm.jpg i img/</div>
+      </div>
+    </div>
+
+  </div> -->
+
+  <div class="cta-block" style="margin-top:3rem;">
     <div>
       <h3>Vill du ha samma resultat?</h3>
       <p>Kontakta oss för en kostnadsfri konsultation. Vi hjälper dig hitta rätt lösning för din bil.</p>
@@ -175,14 +518,19 @@
   </div>
 </main>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-  <img src="" alt="" id="lightbox-img">
-  <div class="lightbox-meta">
-    <div class="tag" id="lightbox-tag"></div>
-    <div class="title" id="lightbox-title"></div>
+<!-- SLIDESHOW -->
+<div class="slideshow" id="slideshow">
+  <button class="slideshow-close" id="slideshowClose">&times;</button>
+  <div class="slideshow-img-wrap">
+    <button class="slide-btn prev" id="slidePrev">&#8249;</button>
+    <img src="" alt="" id="slideshowImg">
+    <button class="slide-btn next" id="slideNext">&#8250;</button>
   </div>
+  <div class="slideshow-meta">
+    <div class="slideshow-title" id="slideshowTitle"></div>
+    <div class="slideshow-counter" id="slideshowCounter"></div>
+  </div>
+  <div class="slideshow-dots" id="slideshowDots"></div>
 </div>
 
 <footer>
@@ -196,6 +544,180 @@
 </footer>
 
 <script src="js/shared.js"></script>
-<script src="js/galleri.js"></script>
+<script>
+// ── Gallery filter ────────────────────────────────────────
+function filterProjects(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.project-card').forEach(function(card) {
+    card.style.display = (cat === 'alla' || card.dataset.cat === cat) ? '' : 'none';
+  });
+}
+
+// ── Slideshow ─────────────────────────────────────────────
+var currentImages = [];
+var currentIndex  = 0;
+var currentTitle  = '';
+var currentIsVideo = false;
+var currentVideoSrc = '';
+
+function openSlideshow(card) {
+  var videoEl = card.querySelector('video');
+  if (videoEl) {
+    // Open as video
+    currentIsVideo = true;
+    currentVideoSrc = (videoEl.querySelector('source') && videoEl.querySelector('source').src) || videoEl.currentSrc || videoEl.src || '';
+    currentImages = [];
+    currentIndex = 0;
+    currentTitle  = card.dataset.title || '';
+    document.getElementById('slideshow').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    buildDots();
+    showVideo();
+    return;
+  }
+  currentIsVideo = false;
+  var images = card.dataset.images ? card.dataset.images.split(',') : [];
+  if (!images.length || images[0] === '') return;
+  currentImages = images;
+  currentIndex  = 0;
+  currentTitle  = card.dataset.title || '';
+  document.getElementById('slideshow').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  buildDots();
+  showSlide(0);
+}
+
+function buildDots() {
+  var dots = document.getElementById('slideshowDots');
+  dots.innerHTML = '';
+  if (currentIsVideo) { dots.style.display = 'none'; return; }
+  if (currentImages.length <= 1) { dots.style.display = 'none'; return; }
+  dots.style.display = 'flex';
+  currentImages.forEach(function(_, i) {
+    var s = document.createElement('span');
+    s.onclick = function() { showSlide(i); };
+    dots.appendChild(s);
+  });
+}
+
+function showVideo() {
+  var img = document.getElementById('slideshowImg');
+  img.style.display = 'none';
+  var wrap = document.querySelector('.slideshow-img-wrap');
+  var sv = document.getElementById('slideshowVideo');
+  if (!sv) {
+    sv = document.createElement('video');
+    sv.id = 'slideshowVideo';
+    sv.controls = false; // hide native controls
+    sv.playsInline = true;
+    sv.setAttribute('playsinline', '');
+    sv.setAttribute('webkit-playsinline', '');
+    sv.style.display = 'block';
+    sv.style.maxWidth = '90vw';
+    sv.style.maxHeight = '75vh';
+    sv.style.objectFit = 'contain';
+    sv.style.borderRadius = '3px';
+    wrap.appendChild(sv);
+  } else {
+    sv.style.display = 'block';
+  }
+  sv.src = currentVideoSrc;
+  sv.currentTime = 0;
+  sv.muted = true;
+  sv.play().catch(function(){});
+  document.getElementById('slideshowTitle').textContent = currentTitle;
+  document.getElementById('slideshowCounter').textContent = 'Video';
+  document.getElementById('slidePrev').style.display = 'none';
+  document.getElementById('slideNext').style.display = 'none';
+}
+
+function showSlide(idx) {
+  if (!currentImages.length) return;
+  currentIndex = (idx + currentImages.length) % currentImages.length;
+  var img = document.getElementById('slideshowImg');
+  img.src = 'img/' + currentImages[currentIndex];
+  img.alt = currentTitle + ' – bild ' + (currentIndex + 1);
+  document.getElementById('slideshowTitle').textContent = currentTitle;
+  document.getElementById('slideshowCounter').textContent =
+    currentImages.length > 1 ? (currentIndex + 1) + ' / ' + currentImages.length : '';
+  // Update dots
+  document.querySelectorAll('#slideshowDots span').forEach(function(s, i) {
+    s.classList.toggle('active', i === currentIndex);
+  });
+  // Hide nav buttons if only one image
+  var show = currentImages.length > 1;
+  document.getElementById('slidePrev').style.display = show ? '' : 'none';
+  document.getElementById('slideNext').style.display = show ? '' : 'none';
+}
+
+function closeSlideshow() {
+  document.getElementById('slideshow').classList.remove('open');
+  document.body.style.overflow = '';
+  // stop video if playing
+  var sv = document.getElementById('slideshowVideo');
+  if (sv) {
+    try { sv.pause(); } catch(e) {}
+    sv.removeAttribute('src');
+    sv.load && sv.load();
+    sv.style.display = 'none';
+  }
+  // reset image display
+  var img = document.getElementById('slideshowImg');
+  if (img) img.style.display = 'block';
+  currentIsVideo = false;
+}
+
+document.getElementById('slideNext').onclick    = function() { showSlide(currentIndex + 1); };
+document.getElementById('slidePrev').onclick    = function() { showSlide(currentIndex - 1); };
+document.getElementById('slideshowClose').onclick = closeSlideshow;
+document.getElementById('slideshow').addEventListener('click', function(e) {
+  if (e.target === this) closeSlideshow();
+});
+
+// Open on project card click
+document.querySelectorAll('.project-card').forEach(function(card) {
+  card.addEventListener('click', function() { openSlideshow(this); });
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('slideshow').classList.contains('open')) return;
+  if (e.key === 'ArrowRight') showSlide(currentIndex + 1);
+  if (e.key === 'ArrowLeft')  showSlide(currentIndex - 1);
+  if (e.key === 'Escape')     closeSlideshow();
+});
+
+// Touch swipe
+var touchStartX = 0;
+document.getElementById('slideshow').addEventListener('touchstart', function(e) {
+  touchStartX = e.changedTouches[0].screenX;
+});
+document.getElementById('slideshow').addEventListener('touchend', function(e) {
+  var dx = e.changedTouches[0].screenX - touchStartX;
+  if (Math.abs(dx) > 40) { dx < 0 ? showSlide(currentIndex + 1) : showSlide(currentIndex - 1); }
+});
+
+// ── Lazy-play thumbnail videos only when visible ─────────────────
+(function() {
+  var videoThumbs = document.querySelectorAll('.project-thumb video');
+  if (!videoThumbs.length || !window.IntersectionObserver) return;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      var video = entry.target;
+      if (entry.isIntersecting) {
+        video.play().catch(function() {});
+      } else {
+        video.pause();
+      }
+    });
+  }, { threshold: 0.25 });
+  videoThumbs.forEach(function(video) {
+    video.setAttribute('preload', 'none');
+    video.muted = true;
+    observer.observe(video);
+  });
+})();
+</script>
 </body>
 </html>

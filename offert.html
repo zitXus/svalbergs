@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offertverktyg – Svalbergs Bilteknik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --carbon: #0D0D0F; --steel: #1A1C22; --panel: #22252D;
+  --ice: #3DDFFF; --ice-dim: rgba(61,223,255,0.12); --ice-border: rgba(61,223,255,0.3);
+  --tungsten: #C8C0B4; --white: #F5F5F5; --muted: #6E7380; --divider: rgba(255,255,255,0.08);
+  --green: #2CB97A; --green-dim: rgba(44,185,122,0.12); --green-border: rgba(44,185,122,0.3);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--carbon); color: var(--white); min-height: 100vh; overflow: hidden; }
+
+/* ── Nav ── */
+nav { display:flex; align-items:center; justify-content:space-between; padding:1.1rem 2rem; background:rgba(13,13,15,0.95); border-bottom:1px solid var(--divider); position:sticky; top:0; z-index:50; }
+.nav-logo { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.4rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--white); text-decoration:none; }
+.nav-logo span { color:var(--ice); }
+.nav-back { font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); text-decoration:none; display:flex; align-items:center; gap:0.4rem; transition:color 0.2s; }
+.nav-back:hover { color:var(--white); }
+
+/* ── Layout ── */
+.workspace { display:grid; grid-template-columns:420px 1fr; gap:0; height:calc(100vh - 58px); overflow:hidden; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(61,223,255,0.25); border-radius:10px; }
+::-webkit-scrollbar-thumb:hover { background:rgba(61,223,255,0.5); }
+* { scrollbar-width:thin; scrollbar-color:rgba(61,223,255,0.25) transparent; }
+
+/* ── Form panel ── */
+.form-panel { background:var(--steel); border-right:1px solid var(--divider); padding:2rem; overflow-y:auto; height:100%; }
+.form-panel h2 { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.4rem; text-transform:uppercase; margin-bottom:1.5rem; color:var(--white); }
+.form-section { margin-bottom:1.8rem; }
+.form-section-label { font-size:0.65rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--ice); margin-bottom:0.8rem; padding-bottom:0.5rem; border-bottom:1px solid var(--divider); }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; margin-bottom:0.6rem; }
+.field-row.single { grid-template-columns:1fr; }
+label { display:block; font-size:0.7rem; font-weight:600; letter-spacing:0.06em; color:var(--muted); margin-bottom:0.3rem; text-transform:uppercase; }
+input, textarea, select {
+  width:100%; background:var(--panel); border:1px solid rgba(255,255,255,0.1);
+  border-radius:3px; color:var(--white); font-family:'Inter',sans-serif;
+  font-size:0.85rem; padding:0.65rem 0.85rem; outline:none; transition:border-color 0.2s;
+}
+input:focus, textarea:focus, select:focus { border-color:var(--ice-border); }
+input::placeholder, textarea::placeholder { color:var(--muted); }
+select { appearance:none; cursor:pointer; }
+select option { background:var(--panel); }
+textarea { resize:vertical; min-height:70px; }
+
+/* ── Line items ── */
+.line-items { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.8rem; }
+.line-item { background:var(--panel); border:1px solid var(--divider); border-radius:4px; padding:0.75rem; position:relative; }
+.line-item-row { display:grid; grid-template-columns:1fr 60px 80px; gap:0.5rem; margin-bottom:0.4rem; }
+.line-item-row.desc-row { grid-template-columns:1fr; }
+.remove-line { position:absolute; top:0.5rem; right:0.5rem; background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; line-height:1; transition:color 0.15s; padding:2px 4px; }
+.remove-line:hover { color:#ff6b6b; }
+
+.btn-add-line { width:100%; background:var(--ice-dim); border:1px dashed var(--ice-border); border-radius:3px; color:var(--ice); font-family:'Inter',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:0.6rem; cursor:pointer; transition:background 0.15s; }
+.btn-add-line:hover { background:rgba(61,223,255,0.2); }
+
+.btn-print { width:100%; background:var(--ice); border:none; border-radius:3px; color:var(--carbon); font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.85rem; cursor:pointer; transition:opacity 0.2s; margin-top:1rem; }
+.btn-print:hover { opacity:0.85; }
+.btn-save { width:100%; background:var(--green-dim); border:1px solid var(--green-border); border-radius:3px; color:var(--green); font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.85rem; cursor:pointer; transition:background 0.15s; margin-top:0.5rem; }
+.btn-save:hover { background:rgba(44,185,122,0.25); }
+.btn-new { width:100%; background:none; border:1px solid var(--divider); border-radius:3px; color:var(--muted); font-family:'Inter',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:0.65rem; cursor:pointer; transition:all 0.15s; margin-top:0.5rem; }
+.btn-new:hover { border-color:rgba(255,255,255,0.25); color:var(--white); }
+
+/* ── Payment toggles ── */
+.payment-toggles { display:flex; flex-wrap:wrap; gap:0.4rem; }
+.pay-btn {
+  background:var(--panel); border:1px solid var(--divider); border-radius:3px;
+  color:var(--muted); font-family:'Inter',sans-serif; font-size:0.75rem;
+  font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+  padding:0.45rem 0.9rem; cursor:pointer; transition:all 0.15s;
+}
+.pay-btn:hover { border-color:rgba(255,255,255,0.2); color:var(--white); }
+.pay-btn.active { background:var(--ice-dim); border-color:var(--ice-border); color:var(--ice); }
+
+/* ── Discount ── */
+.discount-row { display:flex; align-items:center; gap:0.5rem; margin-top:0.6rem; }
+.discount-row input[type=number] { width:80px; text-align:center; }
+.discount-row select { width:70px; }
+.discount-presets { display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.5rem; }
+.preset-btn {
+  background:var(--panel); border:1px solid var(--divider); border-radius:3px;
+  color:var(--muted); font-family:'Inter',sans-serif; font-size:0.72rem;
+  font-weight:600; letter-spacing:0.05em; padding:0.35rem 0.65rem; cursor:pointer; transition:all 0.15s;
+}
+.preset-btn:hover { border-color:rgba(255,255,255,0.2); color:var(--white); }
+.preset-btn.friend { border-color:var(--green-border); color:var(--green); background:var(--green-dim); }
+.preset-btn.friend:hover { background:rgba(44,185,122,0.25); }
+
+/* ── Mode toggle ── */
+.mode-toggle { display:flex; background:var(--panel); border:1px solid var(--divider); border-radius:4px; overflow:hidden; margin-bottom:1.5rem; }
+.mode-btn { flex:1; background:none; border:none; color:var(--muted); font-family:'Inter',sans-serif; font-size:0.75rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:0.6rem 0.5rem; cursor:pointer; transition:all 0.2s; }
+.mode-btn.active { background:var(--ice); color:var(--carbon); }
+.mode-note { font-size:0.75rem; color:var(--muted); line-height:1.6; padding:0.6rem 0.75rem; background:var(--panel); border:1px solid var(--divider); border-radius:3px; margin-bottom:1.2rem; }
+.mode-note strong { color:var(--tungsten); }
+
+/* Saved list */
+.saved-list { display:flex; flex-direction:column; gap:0.4rem; margin-top:0.6rem; max-height:160px; overflow-y:auto; }
+.saved-item { display:flex; align-items:center; justify-content:space-between; background:var(--panel); border:1px solid var(--divider); border-radius:3px; padding:0.5rem 0.75rem; font-size:0.8rem; cursor:pointer; transition:border-color 0.15s; }
+.saved-item:hover { border-color:var(--ice-border); }
+.saved-item span { color:var(--muted); font-size:0.72rem; }
+.saved-item-del { background:none; border:none; color:var(--muted); cursor:pointer; font-size:0.9rem; padding:0 2px; }
+.saved-item-del:hover { color:#ff6b6b; }
+
+/* ── Preview panel ── */
+.preview-panel { padding:2.5rem; overflow-y:auto; background:var(--carbon); height:100%; }
+.preview-wrap { max-width:720px; margin:0 auto; }
+
+/* ── Offert document ── */
+.offert-doc {
+  background:#fff; color:#1a1a1a; border-radius:6px;
+  padding:3rem; font-family:'Inter',sans-serif; font-size:14px; line-height:1.6;
+  box-shadow:0 4px 32px rgba(0,0,0,0.5);
+}
+.offert-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:2.5rem; border-bottom:2px solid #1a1a1a; padding-bottom:1.5rem; }
+.offert-company { font-size:22px; font-weight:800; font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; letter-spacing:0.04em; color:#0D0D0F; }
+.offert-company span { color:#0088aa; }
+.offert-company-sub { font-size:12px; color:#888; margin-top:2px; }
+.offert-num { text-align:right; }
+.offert-num .label { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#aaa; }
+.offert-num .num { font-size:20px; font-weight:700; color:#0D0D0F; margin-top:2px; }
+
+.offert-meta { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:2rem; }
+.meta-box { background:#f7f7f5; border-radius:4px; padding:0.75rem 1rem; }
+.meta-box .lbl { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#aaa; margin-bottom:4px; }
+.meta-box .val { font-size:14px; font-weight:600; color:#1a1a1a; }
+.meta-box .sub { font-size:12px; color:#666; }
+
+.offert-dates { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:2rem; }
+.date-item .lbl { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#aaa; margin-bottom:2px; }
+.date-item .val { font-size:13px; color:#1a1a1a; }
+
+/* Table */
+.offert-table { width:100%; border-collapse:collapse; margin-bottom:1.5rem; }
+.offert-table thead tr { border-bottom:1.5px solid #1a1a1a; }
+.offert-table thead th { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#888; padding:0 0 8px; text-align:left; }
+.offert-table thead th.r { text-align:right; }
+.offert-table tbody tr { border-bottom:1px solid #e8e8e8; }
+.offert-table tbody tr:last-child { border-bottom:none; }
+.offert-table td { padding:10px 0; vertical-align:top; }
+.offert-table td.r { text-align:right; }
+.row-name { font-size:14px; font-weight:600; color:#1a1a1a; }
+.row-desc { font-size:12px; color:#888; margin-top:1px; }
+.row-price { font-size:14px; color:#555; }
+.row-total { font-size:14px; font-weight:600; color:#1a1a1a; }
+
+/* Totals */
+.offert-totals { display:flex; flex-direction:column; align-items:flex-end; gap:4px; border-top:1px solid #e8e8e8; padding-top:1rem; margin-bottom:1.5rem; }
+.total-row { display:flex; gap:4rem; }
+.total-row .tl { font-size:13px; color:#888; }
+.total-row .tv { font-size:13px; color:#1a1a1a; }
+.total-row.grand { border-top:1px solid #ccc; padding-top:8px; margin-top:4px; }
+.total-row.grand .tl { font-size:15px; font-weight:600; color:#1a1a1a; }
+.total-row.grand .tv { font-size:15px; font-weight:700; color:#0088aa; }
+
+/* Notes */
+.offert-notes { background:#f7f7f5; border-radius:4px; padding:0.75rem 1rem; margin-bottom:1.5rem; font-size:12px; color:#666; line-height:1.7; }
+.offert-notes strong { color:#1a1a1a; display:block; margin-bottom:2px; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; }
+
+.offert-footer { display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e8e8e8; padding-top:1rem; }
+.offert-footer .f-company { font-size:12px; color:#aaa; }
+.offert-status { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:4px 10px; border-radius:3px; }
+.status-pending { background:#e8f7ef; color:#0f7040; border:1px solid #a8dfc0; }
+.status-approved { background:#e8f0fb; color:#1a5cb5; border:1px solid #a8c4f0; }
+
+/* ── Print ── */
+@media print {
+  nav, .form-panel { display:none !important; }
+  .workspace { display:block; }
+  .preview-panel { padding:0; background:#fff; }
+  .preview-wrap { max-width:100%; margin:0; }
+  .offert-doc { box-shadow:none; border-radius:0; padding:2cm; }
+  @page { margin:0; }
+}
+
+/* ── Responsive ── */
+@media (max-width:900px) {
+  .workspace { grid-template-columns:1fr; }
+  .form-panel { height:auto; }
+  .preview-panel { padding:1.5rem; }
+}
+
+  /* ── Access gate ── */
+  #gate {
+    position:fixed; inset:0; z-index:9999;
+    background:var(--carbon);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:1.5rem;
+  }
+  #gate.unlocked { display:none; }
+  .gate-logo { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:2rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--white); }
+  .gate-logo span { color:var(--ice); }
+  .gate-label { font-size:0.78rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+  .gate-input-wrap { display:flex; gap:0.5rem; }
+  #gate-input {
+    width:180px; background:var(--panel); border:1px solid var(--divider);
+    border-radius:3px; color:var(--white); font-family:'Barlow Condensed',sans-serif;
+    font-size:1.5rem; font-weight:700; letter-spacing:0.3em; text-transform:uppercase;
+    padding:0.7rem 1rem; outline:none; text-align:center; transition:border-color 0.2s;
+  }
+  #gate-input:focus { border-color:var(--ice-border); }
+  #gate-input.shake { border-color:rgba(255,80,80,0.6); animation:gshake 0.3s ease; }
+  @keyframes gshake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  #gate-btn {
+    background:var(--ice); border:none; border-radius:3px; color:var(--carbon);
+    font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:700;
+    letter-spacing:0.1em; text-transform:uppercase; padding:0.7rem 1.3rem; cursor:pointer; transition:opacity 0.2s;
+  }
+  #gate-btn:hover { opacity:0.85; }
+  .gate-error { font-size:0.78rem; color:rgba(255,100,100,0.9); min-height:1rem; }
+
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-logo">Svalbergs<span> Bilteknik</span></div>
+  <div class="gate-label">Internt verktyg · Ange kod</div>
+  <div class="gate-input-wrap">
+    <input type="text" id="gate-input" maxlength="6" placeholder="······" autocomplete="off" autocorrect="off" spellcheck="false" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+    <button id="gate-btn" onclick="checkGate()">OK</button>
+  </div>
+  <div class="gate-error" id="gate-error"></div>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Svalbergs<span> Bilteknik</span></a>
+  <div style="display:flex;gap:1rem;align-items:center;">
+    <a href="leverans.html" class="nav-back">Leveranskvitto</a>
+    <a href="index.html" class="nav-back">← Tillbaka</a>
+  </div>
+</nav>
+
+<div class="workspace">
+
+  <!-- ── FORM PANEL ── -->
+  <div class="form-panel">
+    <h2>Ny offert</h2>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btnPrivat" onclick="setMode('privat')">👤 Privatperson</button>
+      <button class="mode-btn" id="btnFirma" onclick="setMode('firma')">🏢 Enskild firma</button>
+    </div>
+    <div class="mode-note" id="modeNote">
+      <strong>Privatperson-läge:</strong> Ingen moms. Betalning via Swish. Dokumentet kallas "Prisuppgift".
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Offertinfo</div>
+      <div class="field-row">
+        <div>
+          <label>Offertnummer</label>
+          <input type="text" id="f-num" placeholder="2025-001">
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="f-status">
+            <option value="pending">Inväntar godkännande</option>
+            <option value="approved">Godkänd</option>
+            <option value="invoiced">Fakturerad</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div>
+          <label>Offertdatum</label>
+          <input type="date" id="f-date">
+        </div>
+        <div>
+          <label>Giltig till</label>
+          <input type="date" id="f-valid">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Kund</div>
+      <div class="field-row single">
+        <div>
+          <label>Namn</label>
+          <input type="text" id="f-name" placeholder="Erik Lindqvist">
+        </div>
+      </div>
+      <div class="field-row">
+        <div>
+          <label>Stad / Område</label>
+          <input type="text" id="f-city" placeholder="Stockholm">
+        </div>
+        <div>
+          <label>E-post (valfritt)</label>
+          <input type="email" id="f-email" placeholder="erik@mail.se">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Fordon</div>
+      <div class="field-row">
+        <div>
+          <label>Märke & Modell</label>
+          <input type="text" id="f-car" placeholder="Renault Clio V">
+        </div>
+        <div>
+          <label>Registreringsnummer</label>
+          <input type="text" id="f-reg" placeholder="ABC123" oninput="this.value=this.value.toUpperCase()">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Tjänster &amp; material</div>
+      <div class="line-items" id="lineItems"></div>
+      <button class="btn-add-line" onclick="addLine()">+ Lägg till rad</button>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Rabatt</div>
+      <div class="discount-row">
+        <input type="number" id="f-discount" value="0" min="0" step="1" oninput="renderPreview()" placeholder="0">
+        <select id="f-discount-type" onchange="renderPreview()">
+          <option value="pct">%</option>
+          <option value="kr">kr</option>
+        </select>
+        <span style="font-size:0.78rem;color:var(--muted);" id="discount-preview-txt">— ingen rabatt</span>
+      </div>
+      <div class="discount-presets">
+        <button class="preset-btn friend" onclick="setDiscount(100,'pct','Kompis/familj – gratis 💚')">Gratis 💚</button>
+        <button class="preset-btn friend" onclick="setDiscount(50,'pct','Kompis/familj – 50%')">Kompis 50%</button>
+        <button class="preset-btn friend" onclick="setDiscount(25,'pct','Familjerabatt 25%')">Familj 25%</button>
+        <button class="preset-btn" onclick="setDiscount(10,'pct','10% rabatt')">10%</button>
+        <button class="preset-btn" onclick="setDiscount(0,'pct','')">Nollställ</button>
+      </div>
+      <div id="f-discount-reason-wrap" style="margin-top:0.5rem;display:none;">
+        <label>Rabattorsak (visas på prisuppgiften)</label>
+        <input type="text" id="f-discount-reason" placeholder="Kompis/familj" oninput="renderPreview()">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Prisnotering (fritext)</div>
+      <div class="field-row single">
+        <div>
+          <label>Visas bredvid totalsumman</label>
+          <input type="text" id="f-price-note" placeholder="t.ex. Inkl. alla delar och arbetstid" oninput="renderPreview()">
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;">
+        <button class="preset-btn" onclick="setPriceNote('Inkl. alla delar och arbetstid')">Inkl. allt</button>
+        <button class="preset-btn" onclick="setPriceNote('Material tillkommer')">Material tillkommer</button>
+        <button class="preset-btn" onclick="setPriceNote('Offertpris – fast pris')">Fast pris</button>
+        <button class="preset-btn" onclick="setPriceNote('Ungefärligt pris')">Ungefärligt</button>
+        <button class="preset-btn" onclick="setPriceNote('')">Rensa</button>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Betalningssätt</div>
+      <div class="payment-toggles" id="paymentToggles">
+        <button class="pay-btn active" onclick="togglePayment('Swish', this)">Swish</button>
+        <button class="pay-btn" onclick="togglePayment('Kontant', this)">Kontant</button>
+        <button class="pay-btn" onclick="togglePayment('Kort', this)">Kort</button>
+        <button class="pay-btn" onclick="togglePayment('Faktura', this)">Faktura</button>
+        <button class="pay-btn" onclick="togglePayment('Banköverföring', this)">Bankgiro</button>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Anteckningar</div>
+      <div class="field-row single">
+        <div>
+          <label>Villkor / notering</label>
+          <textarea id="f-notes" placeholder="Betalning sker via Swish efter avslutat arbete. Prisuppgiften är giltig i 30 dagar.">Betalning sker via Swish efter avslutat arbete. Prisuppgiften är giltig i 30 dagar.</textarea>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">🖨 Skriv ut / Spara som PDF</button>
+    <button class="btn-save" onclick="saveQuote()">💾 Spara offert</button>
+    <button class="btn-new" onclick="newQuote()">+ Ny offert</button>
+
+    <div class="form-section" style="margin-top:1.5rem;">
+      <div class="form-section-label">Sparade offerter</div>
+      <div class="saved-list" id="savedList"></div>
+    </div>
+  </div>
+
+  <!-- ── PREVIEW PANEL ── -->
+  <div class="preview-panel">
+    <div class="preview-wrap">
+      <div class="offert-doc" id="offertDoc">
+
+        <div class="offert-header">
+          <div>
+            <div class="offert-company">Svalbergs<span> Bilteknik</span></div>
+            <div class="offert-company-sub">svalbergs.se</div>
+          </div>
+          <div class="offert-num">
+            <div class="label" id="p-doc-type">Prisuppgift</div>
+            <div class="num" id="p-num">#2025-001</div>
+          </div>
+        </div>
+
+        <div class="offert-meta">
+          <div class="meta-box">
+            <div class="lbl">Kund</div>
+            <div class="val" id="p-name">—</div>
+            <div class="sub" id="p-city"></div>
+            <div class="sub" id="p-email" style="color:#0088aa;"></div>
+          </div>
+          <div class="meta-box">
+            <div class="lbl">Fordon</div>
+            <div class="val" id="p-car">—</div>
+            <div class="sub" id="p-reg"></div>
+          </div>
+        </div>
+
+        <div class="offert-dates">
+          <div class="date-item">
+            <div class="lbl">Offertdatum</div>
+            <div class="val" id="p-date">—</div>
+          </div>
+          <div class="date-item">
+            <div class="lbl">Giltig till</div>
+            <div class="val" id="p-valid">—</div>
+          </div>
+        </div>
+
+        <table class="offert-table">
+          <thead>
+            <tr>
+              <th>Tjänst / Material</th>
+              <th class="r" style="width:50px;">Antal</th>
+              <th class="r" style="width:90px;">Á-pris</th>
+              <th class="r" style="width:90px;">Summa</th>
+            </tr>
+          </thead>
+          <tbody id="p-lines">
+            <tr><td colspan="4" style="color:#aaa;padding:1rem 0;text-align:center;font-size:13px;">Lägg till rader i formuläret</td></tr>
+          </tbody>
+        </table>
+
+        <div class="offert-totals" id="p-totals-wrap">
+          <div class="total-row" id="p-netto-row"><span class="tl">Netto</span><span class="tv" id="p-netto">0 kr</span></div>
+          <div class="total-row" id="p-discount-row" style="display:none;color:#2CB97A;"><span class="tl" id="p-discount-lbl" style="color:#2CB97A;">Rabatt</span><span class="tv" id="p-discount" style="color:#2CB97A;">0 kr</span></div>
+          <div class="total-row" id="p-moms-row"><span class="tl">Moms 25%</span><span class="tv" id="p-moms">0 kr</span></div>
+          <div class="total-row grand"><span class="tl" id="p-total-lbl">Totalt</span><span class="tv" id="p-total">0 kr</span></div>
+          <div id="p-price-note-row" style="display:none;margin-top:4px;font-size:12px;color:#888;text-align:right;"><span id="p-price-note"></span></div>
+        </div>
+
+        <div class="offert-notes">
+          <strong>Betalningsvillkor</strong>
+          <span id="p-notes">Betalning sker efter avslutat arbete via Swish eller banköverföring. Offerten är giltig i 30 dagar.</span>
+        </div>
+
+        <div class="offert-footer">
+          <div class="f-company">Svalbergs Bilteknik · svalbergs.se</div>
+          <div class="offert-status status-pending" id="p-status">Inväntar godkännande</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Helpers ──────────────────────────────────────────────────────────
+function fmt(n) { return Math.round(n).toLocaleString('sv-SE') + ' kr'; }
+function today() {
+  var d = new Date();
+  return d.toISOString().split('T')[0];
+}
+function in30() {
+  var d = new Date(); d.setDate(d.getDate() + 30);
+  return d.toISOString().split('T')[0];
+}
+function fmtDate(s) {
+  if (!s) return '—';
+  var p = s.split('-');
+  return p[2] + '/' + p[1] + ' ' + p[0];
+}
+function nextNum() {
+  var n = parseInt(localStorage.getItem('sb-offert-counter') || '0') + 1;
+  localStorage.setItem('sb-offert-counter', n);
+  return '2025-' + String(n).padStart(3, '0');
+}
+
+// ── Line items ────────────────────────────────────────────────────────
+var lines = [];
+
+function addLine(name, desc, qty, price) {
+  var id = Date.now() + Math.random();
+  lines.push({ id: id, name: name||'', desc: desc||'', qty: qty||1, price: price||0 });
+  renderLines();
+}
+
+function removeLine(id) {
+  lines = lines.filter(function(l){ return l.id !== id; });
+  renderLines();
+}
+
+function renderLines() {
+  var container = document.getElementById('lineItems');
+  container.innerHTML = '';
+  lines.forEach(function(l) {
+    var div = document.createElement('div');
+    div.className = 'line-item';
+    div.innerHTML =
+      '<button class="remove-line" onclick="removeLine(' + l.id + ')">✕</button>' +
+      '<div class="line-item-row">' +
+        '<div><label>Tjänst / Material</label><input type="text" value="' + esc(l.name) + '" oninput="updateLine(' + l.id + ',\'name\',this.value)" placeholder="Bilstereo Kenwood DMX-8021"></div>' +
+        '<div><label>Antal</label><input type="number" value="' + l.qty + '" min="1" step="1" oninput="updateLine(' + l.id + ',\'qty\',parseFloat(this.value)||1)" style="text-align:center;"></div>' +
+        '<div><label id="price-lbl-' + l.id + '">Á-pris</label><input type="number" value="' + l.price + '" min="0" step="1" oninput="updateLine(' + l.id + ',\'price\',parseFloat(this.value)||0)" style="text-align:right;"></div>' +
+      '</div>' +
+      '<div class="line-item-row desc-row"><div><label>Beskrivning (valfri)</label><input type="text" value="' + esc(l.desc) + '" oninput="updateLine(' + l.id + ',\'desc\',this.value)" placeholder="Inkl. montering och adapterkablar"></div></div>';
+    container.appendChild(div);
+  });
+  renderPreview();
+}
+
+function updateLine(id, field, val) {
+  lines.forEach(function(l){ if (l.id === id) l[field] = val; });
+  renderPreview();
+}
+
+function esc(s) { return (s||'').replace(/"/g,'&quot;'); }
+
+// ── Live preview ──────────────────────────────────────────────────────
+function bind(id, pid, transform) {
+  var el = document.getElementById(id);
+  var pel = document.getElementById(pid);
+  if (!el || !pel) return;
+  function update() { pel.textContent = transform ? transform(el.value) : (el.value || '—'); }
+  el.addEventListener('input', update);
+  el.addEventListener('change', update);
+  update();
+}
+
+function renderPreview() {
+  // Lines table
+  var tbody = document.getElementById('p-lines');
+  if (lines.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:#aaa;padding:1rem 0;text-align:center;font-size:13px;">Lägg till rader i formuläret</td></tr>';
+  } else {
+    tbody.innerHTML = lines.map(function(l) {
+      var sum = (l.qty || 1) * (l.price || 0);
+      return '<tr>' +
+        '<td><div class="row-name">' + (l.name || '—') + '</div>' + (l.desc ? '<div class="row-desc">' + l.desc + '</div>' : '') + '</td>' +
+        '<td class="r row-price">' + (l.qty||1) + '</td>' +
+        '<td class="r row-price">' + fmt(l.price||0) + '</td>' +
+        '<td class="r row-total">' + fmt(sum) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+  // Totals
+  var netto = lines.reduce(function(s, l){ return s + (l.qty||1)*(l.price||0); }, 0);
+  var firma = window.currentMode === 'firma';
+
+  // Discount
+  var discVal  = parseFloat(document.getElementById('f-discount').value) || 0;
+  var discType = document.getElementById('f-discount-type').value;
+  var discAmt  = discType === 'pct' ? netto * (discVal / 100) : Math.min(discVal, netto);
+  var discReason = (document.getElementById('f-discount-reason') || {}).value || '';
+  var afterDisc = Math.max(0, netto - discAmt);
+  var moms  = firma ? afterDisc * 0.25 : 0;
+  var total = afterDisc + moms;
+
+  // Discount preview text in form
+  var discTxt = document.getElementById('discount-preview-txt');
+  var reasonWrap = document.getElementById('f-discount-reason-wrap');
+  if (discVal > 0) {
+    discTxt.textContent = '− ' + fmt(discAmt) + (discType==='pct' ? ' (' + discVal + '%)' : '');
+    discTxt.style.color = 'var(--green)';
+    reasonWrap.style.display = '';
+  } else {
+    discTxt.textContent = '— ingen rabatt';
+    discTxt.style.color = 'var(--muted)';
+    reasonWrap.style.display = 'none';
+  }
+
+  // Preview totals
+  document.getElementById('p-netto-row').style.display    = (firma || discAmt > 0) ? '' : 'none';
+  document.getElementById('p-moms-row').style.display     = firma ? '' : 'none';
+  document.getElementById('p-discount-row').style.display = discAmt > 0 ? '' : 'none';
+  document.getElementById('p-netto').textContent    = fmt(netto);
+  document.getElementById('p-moms').textContent     = fmt(moms);
+  document.getElementById('p-discount').textContent = '− ' + fmt(discAmt);
+  var dlbl = discReason ? discReason : (discType==='pct' ? discVal + '% rabatt' : 'Rabatt');
+  document.getElementById('p-discount-lbl').textContent = dlbl;
+  document.getElementById('p-total').textContent    = total === 0 ? 'Gratis 💚' : fmt(total);
+  document.getElementById('p-total-lbl').textContent = firma ? 'Totalt inkl. moms' : 'Totalt att betala';
+  // Price note
+  var priceNote = (document.getElementById('f-price-note')||{}).value || '';
+  var pnRow = document.getElementById('p-price-note-row');
+  if (pnRow) {
+    pnRow.style.display = priceNote ? '' : 'none';
+    document.getElementById('p-price-note').textContent = priceNote;
+  }
+  document.getElementById('p-doc-type').textContent  = firma ? 'Offert' : 'Prisuppgift';
+  // Status
+  var statusEl  = document.getElementById('p-status');
+  var statusVal = document.getElementById('f-status').value;
+  var statusMap = {
+    pending:  { text: 'Inväntar godkännande', cls: 'status-pending' },
+    approved: { text: 'Godkänd',              cls: 'status-approved' },
+    invoiced: { text: 'Fakturerad',            cls: 'status-approved' },
+  };
+  var s = statusMap[statusVal] || statusMap.pending;
+  statusEl.textContent = s.text;
+  statusEl.className = 'offert-status ' + s.cls;
+}
+
+// ── Save / Load ───────────────────────────────────────────────────────
+function saveQuote() {
+  var num = document.getElementById('f-num').value || 'okänd';
+  var name = document.getElementById('f-name').value || 'Okänd kund';
+  var quote = {
+    num: num, name: name,
+    date: document.getElementById('f-date').value,
+    valid: document.getElementById('f-valid').value,
+    city: document.getElementById('f-city').value,
+    email: document.getElementById('f-email').value,
+    car: document.getElementById('f-car').value,
+    reg: document.getElementById('f-reg').value,
+    notes: document.getElementById('f-notes').value,
+    status: document.getElementById('f-status').value,
+    lines: JSON.parse(JSON.stringify(lines)),
+    saved: new Date().toISOString(),
+  };
+  var saved = JSON.parse(localStorage.getItem('sb-offerter') || '[]');
+  var existing = saved.findIndex(function(q){ return q.num === num; });
+  if (existing >= 0) saved[existing] = quote; else saved.unshift(quote);
+  localStorage.setItem('sb-offerter', JSON.stringify(saved));
+  renderSavedList();
+  var btn = document.querySelector('.btn-save');
+  btn.textContent = '✓ Sparad!';
+  setTimeout(function(){ btn.textContent = '💾 Spara offert'; }, 2000);
+}
+
+function loadQuote(q) {
+  document.getElementById('f-num').value    = q.num || '';
+  document.getElementById('f-date').value   = q.date || '';
+  document.getElementById('f-valid').value  = q.valid || '';
+  document.getElementById('f-name').value   = q.name || '';
+  document.getElementById('f-city').value   = q.city || '';
+  document.getElementById('f-email').value  = q.email || '';
+  document.getElementById('f-car').value    = q.car || '';
+  document.getElementById('f-reg').value    = q.reg || '';
+  document.getElementById('f-notes').value  = q.notes || '';
+  document.getElementById('f-status').value = q.status || 'pending';
+  lines = (q.lines || []).map(function(l){ l.id = Date.now()+Math.random(); return l; });
+  // Trigger all live bindings
+  ['f-num','f-date','f-valid','f-name','f-city','f-email','f-car','f-reg','f-notes','f-status'].forEach(function(id){
+    document.getElementById(id).dispatchEvent(new Event('input'));
+    document.getElementById(id).dispatchEvent(new Event('change'));
+  });
+  renderLines();
+}
+
+function deleteQuote(num, e) {
+  e.stopPropagation();
+  var saved = JSON.parse(localStorage.getItem('sb-offerter') || '[]');
+  saved = saved.filter(function(q){ return q.num !== num; });
+  localStorage.setItem('sb-offerter', JSON.stringify(saved));
+  renderSavedList();
+}
+
+function renderSavedList() {
+  var saved = JSON.parse(localStorage.getItem('sb-offerter') || '[]');
+  var container = document.getElementById('savedList');
+  if (!saved.length) { container.innerHTML = '<div style="font-size:0.78rem;color:var(--muted);padding:0.4rem 0;">Inga sparade offerter ännu.</div>'; return; }
+  container.innerHTML = saved.map(function(q) {
+    return '<div class="saved-item" onclick="loadQuote(' + JSON.stringify(q).replace(/"/g,'&quot;') + ')">' +
+      '<div><strong style="font-size:0.82rem;">#' + q.num + '</strong> — ' + (q.name||'?') + '<br><span>' + (q.car||'') + ' · ' + fmtDate(q.date) + '</span></div>' +
+      '<button class="saved-item-del" onclick="deleteQuote(\'' + q.num + '\',event)" title="Radera">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+function newQuote() {
+  if (!confirm('Rensa formuläret och skapa en ny offert?')) return;
+  lines = [];
+  var num = nextNum();
+  document.getElementById('f-num').value   = num;
+  document.getElementById('f-date').value  = today();
+  document.getElementById('f-valid').value = in30();
+  document.getElementById('f-name').value  = '';
+  document.getElementById('f-city').value  = '';
+  document.getElementById('f-email').value = '';
+  document.getElementById('f-car').value   = '';
+  document.getElementById('f-reg').value   = '';
+  document.getElementById('f-status').value= 'pending';
+  document.getElementById('f-notes').value = getModeNotes();
+  // Reset payment buttons to Swish only
+  window.selectedPayments = ['Swish'];
+  document.querySelectorAll('.pay-btn').forEach(function(b) {
+    b.classList.toggle('active', b.textContent === 'Swish');
+  });
+  ['f-num','f-date','f-valid','f-name','f-city','f-email','f-car','f-reg','f-notes','f-status'].forEach(function(id){
+    document.getElementById(id).dispatchEvent(new Event('input'));
+    document.getElementById(id).dispatchEvent(new Event('change'));
+  });
+  renderLines();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────
+// ── Mode toggle ──────────────────────────────────────────────────────
+window.currentMode = 'privat';
+window.selectedPayments = ['Swish'];
+
+function getPaymentText() {
+  var p = window.selectedPayments;
+  if (!p.length) return 'Betalning överenskommes.';
+  var last = p.length > 1 ? p.slice(0,-1).join(', ') + ' eller ' + p[p.length-1] : p[0];
+  return 'Betalning sker via ' + last + ' efter avslutat arbete.';
+}
+
+function setPriceNote(text) {
+  var el = document.getElementById('f-price-note');
+  if (el) { el.value = text; renderPreview(); }
+}
+
+function setDiscount(val, type, reason) {
+  document.getElementById('f-discount').value = val;
+  document.getElementById('f-discount-type').value = type;
+  if (document.getElementById('f-discount-reason')) {
+    document.getElementById('f-discount-reason').value = reason;
+  }
+  renderPreview();
+}
+
+function togglePayment(method, btn) {
+  var idx = window.selectedPayments.indexOf(method);
+  if (idx >= 0) {
+    if (window.selectedPayments.length === 1) return; // keep at least one
+    window.selectedPayments.splice(idx, 1);
+    btn.classList.remove('active');
+  } else {
+    window.selectedPayments.push(method);
+    btn.classList.add('active');
+  }
+  updateNotesFromPayment();
+}
+
+function updateNotesFromPayment() {
+  var notesEl = document.getElementById('f-notes');
+  var docWord = window.currentMode === 'firma' ? 'Offerten' : 'Prisuppgiften';
+  var extra = window.currentMode === 'firma' && window.selectedPayments.includes('Faktura')
+    ? ' Faktura utfärdas med 10 dagars betalningstid.' : '';
+  notesEl.value = getPaymentText() + extra + ' ' + docWord + ' är giltig i 30 dagar.';
+  notesEl.dispatchEvent(new Event('input'));
+}
+
+function getModeNotes() {
+  var docWord = window.currentMode === 'firma' ? 'Offerten' : 'Prisuppgiften';
+  var extra = window.currentMode === 'firma' && window.selectedPayments.includes('Faktura')
+    ? ' Faktura utfärdas med 10 dagars betalningstid.' : '';
+  return getPaymentText() + extra + ' ' + docWord + ' är giltig i 30 dagar.';
+}
+
+function setMode(mode) {
+  window.currentMode = mode;
+  document.getElementById('btnPrivat').classList.toggle('active', mode === 'privat');
+  document.getElementById('btnFirma').classList.toggle('active', mode === 'firma');
+  var note = document.getElementById('modeNote');
+  if (mode === 'privat') {
+    note.innerHTML = '<strong>Privatperson-läge:</strong> Ingen moms. Betalning via Swish. Dokumentet kallas "Prisuppgift".';
+  } else {
+    note.innerHTML = '<strong>Enskild firma-läge:</strong> Moms 25% läggs till. Offert med fullständig momsredovisning.';
+  }
+  // Update notes if it still has the default text
+  var notesEl = document.getElementById('f-notes');
+  updateNotesFromPayment();
+  renderPreview();
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  // Set defaults
+  document.getElementById('f-date').value  = today();
+  document.getElementById('f-valid').value = in30();
+  document.getElementById('f-num').value   = nextNum();
+
+  // Bind all simple text fields
+  bind('f-num',   'p-num',   function(v){ return '#' + (v||'—'); });
+  bind('f-name',  'p-name');
+  bind('f-city',  'p-city');
+  bind('f-email', 'p-email');
+  bind('f-car',   'p-car');
+  bind('f-reg',   'p-reg',   function(v){ return v ? 'Reg: ' + v : ''; });
+  bind('f-date',  'p-date',  fmtDate);
+  bind('f-valid', 'p-valid', fmtDate);
+  bind('f-notes', 'p-notes');
+  document.getElementById('f-status').addEventListener('change', renderPreview);
+
+  // Trigger initial render
+  renderLines();
+  renderSavedList();
+
+  // Start with one empty line
+  addLine();
+});
+
+/* Gate */
+(function(){
+  var SK='sb-gate-v1';
+  var H='67d3ad3a495';
+  function jh(s){var h=0,i,c;for(i=0;i<s.length;i++){c=s.charCodeAt(i);h=((h<<5)-h)+c;h|=0;}var r=Math.abs(h).toString(16).padStart(8,'0');if(s.length>0){var t=s.length*7+s.charCodeAt(0)*13;r+=t.toString(16);}return r;}
+  if(sessionStorage.getItem(SK)===H){document.getElementById('gate').classList.add('unlocked');}
+  window.checkGate=function(){
+    var v=document.getElementById('gate-input').value.toUpperCase().trim();
+    var inp=document.getElementById('gate-input');
+    var err=document.getElementById('gate-error');
+    if(jh(v)===H){sessionStorage.setItem(SK,H);document.getElementById('gate').classList.add('unlocked');}
+    else{inp.classList.add('shake');err.textContent='Fel kod.';setTimeout(function(){inp.classList.remove('shake');inp.value='';inp.focus();},600);}
+  };
+  document.addEventListener('keydown',function(e){if(e.key==='Enter'&&!document.getElementById('gate').classList.contains('unlocked'))checkGate();});
+})();
+
+</script>
+
+</body>
+</html>

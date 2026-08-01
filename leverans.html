@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leveranskvitto – Svalbergs Bilteknik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --carbon: #0D0D0F; --steel: #1A1C22; --panel: #22252D;
+  --ice: #3DDFFF; --ice-dim: rgba(61,223,255,0.12); --ice-border: rgba(61,223,255,0.3);
+  --tungsten: #C8C0B4; --white: #F5F5F5; --muted: #6E7380; --divider: rgba(255,255,255,0.08);
+  --green: #2CB97A; --green-dim: rgba(44,185,122,0.12); --green-border: rgba(44,185,122,0.3);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--carbon); color: var(--white); overflow: hidden; }
+
+/* ── Nav ── */
+nav { display:flex; align-items:center; justify-content:space-between; padding:1.1rem 2rem; background:rgba(13,13,15,0.95); border-bottom:1px solid var(--divider); position:sticky; top:0; z-index:50; }
+.nav-logo { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.4rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--white); text-decoration:none; }
+.nav-logo span { color:var(--ice); }
+.nav-links-right { display:flex; gap:1rem; align-items:center; }
+.nav-back { font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+.nav-back:hover { color:var(--white); }
+
+/* ── Layout ── */
+.workspace { display:grid; grid-template-columns:420px 1fr; gap:0; height:calc(100vh - 58px); overflow:hidden; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(61,223,255,0.25); border-radius:10px; }
+::-webkit-scrollbar-thumb:hover { background:rgba(61,223,255,0.5); }
+* { scrollbar-width:thin; scrollbar-color:rgba(61,223,255,0.25) transparent; }
+
+/* ── Form panel ── */
+.form-panel { background:var(--steel); border-right:1px solid var(--divider); padding:2rem; overflow-y:auto; height:100%; }
+.form-panel h2 { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.4rem; text-transform:uppercase; margin-bottom:1.5rem; color:var(--white); }
+.form-section { margin-bottom:1.8rem; }
+.form-section-label { font-size:0.65rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--ice); margin-bottom:0.8rem; padding-bottom:0.5rem; border-bottom:1px solid var(--divider); }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; margin-bottom:0.6rem; }
+.field-row.single { grid-template-columns:1fr; }
+label { display:block; font-size:0.7rem; font-weight:600; letter-spacing:0.06em; color:var(--muted); margin-bottom:0.3rem; text-transform:uppercase; }
+input, textarea, select { width:100%; background:var(--panel); border:1px solid rgba(255,255,255,0.1); border-radius:3px; color:var(--white); font-family:'Inter',sans-serif; font-size:0.85rem; padding:0.65rem 0.85rem; outline:none; transition:border-color 0.2s; }
+input:focus, textarea:focus, select:focus { border-color:var(--ice-border); }
+input::placeholder, textarea::placeholder { color:var(--muted); }
+select { appearance:none; cursor:pointer; }
+select option { background:var(--panel); }
+textarea { resize:vertical; min-height:60px; }
+
+/* Work items */
+.work-items { display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.8rem; }
+.work-item { background:var(--panel); border:1px solid var(--divider); border-radius:4px; padding:0.75rem; position:relative; }
+.work-item-grid { display:grid; grid-template-columns:1fr 90px; gap:0.5rem; margin-bottom:0.4rem; }
+.remove-work { position:absolute; top:0.5rem; right:0.5rem; background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; padding:2px 4px; transition:color 0.15s; }
+.remove-work:hover { color:#ff6b6b; }
+
+/* Warranty toggles */
+.warranty-opts { display:flex; flex-wrap:wrap; gap:0.4rem; }
+.w-btn { background:var(--panel); border:1px solid var(--divider); border-radius:3px; color:var(--muted); font-family:'Inter',sans-serif; font-size:0.72rem; font-weight:600; letter-spacing:0.05em; padding:0.35rem 0.7rem; cursor:pointer; transition:all 0.15s; }
+.w-btn:hover { border-color:rgba(255,255,255,0.2); color:var(--white); }
+.w-btn.active { background:var(--green-dim); border-color:var(--green-border); color:var(--green); }
+
+.btn-add { width:100%; background:var(--ice-dim); border:1px dashed var(--ice-border); border-radius:3px; color:var(--ice); font-family:'Inter',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:0.6rem; cursor:pointer; transition:background 0.15s; }
+.btn-add:hover { background:rgba(61,223,255,0.2); }
+.btn-print { width:100%; background:var(--ice); border:none; border-radius:3px; color:var(--carbon); font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.85rem; cursor:pointer; transition:opacity 0.2s; margin-top:1rem; }
+.btn-print:hover { opacity:0.85; }
+
+/* ── Preview panel ── */
+.preview-panel { padding:2.5rem; overflow-y:auto; background:var(--carbon); height:100%; }
+.preview-wrap { max-width:720px; margin:0 auto; }
+
+/* ── Document ── */
+.doc {
+  background:#fff; color:#1a1a1a; border-radius:6px;
+  padding:3rem; font-family:'Inter',sans-serif; font-size:14px; line-height:1.6;
+  box-shadow:0 4px 32px rgba(0,0,0,0.5);
+}
+.doc-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:2px solid #1a1a1a; }
+.doc-company { font-size:22px; font-weight:800; font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; letter-spacing:0.04em; color:#0D0D0F; }
+.doc-company span { color:#0088aa; }
+.doc-company-sub { font-size:12px; color:#888; margin-top:2px; }
+.doc-type-block { text-align:right; }
+.doc-type-label { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#aaa; }
+.doc-type-val { font-size:18px; font-weight:700; color:#1a1a1a; margin-top:2px; }
+.doc-type-date { font-size:12px; color:#888; margin-top:2px; }
+
+/* Meta */
+.doc-meta { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:2rem; }
+.meta-box { background:#f7f7f5; border-radius:4px; padding:0.75rem 1rem; }
+.meta-box .lbl { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#aaa; margin-bottom:4px; }
+.meta-box .val { font-size:14px; font-weight:600; color:#1a1a1a; }
+.meta-box .sub { font-size:12px; color:#666; }
+
+/* Work done */
+.section-title { font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#888; border-bottom:1px solid #e8e8e8; padding-bottom:6px; margin-bottom:0; }
+.work-table { width:100%; border-collapse:collapse; margin-bottom:1.5rem; }
+.work-table tr { border-bottom:1px solid #e8e8e8; }
+.work-table tr:last-child { border-bottom:none; }
+.work-table td { padding:10px 0; vertical-align:top; font-size:14px; }
+.work-name { font-weight:600; color:#1a1a1a; }
+.work-detail { font-size:12px; color:#888; margin-top:2px; }
+.work-status { text-align:right; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:3px 8px; border-radius:3px; white-space:nowrap; }
+.status-done { background:#e8f7ef; color:#0f7040; }
+
+/* Warranty */
+.warranty-block { background:#f0faf5; border:1px solid #a8dfc0; border-radius:6px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; }
+.warranty-header { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem; }
+.warranty-icon { font-size:1.2rem; }
+.warranty-title { font-size:14px; font-weight:700; color:#0f7040; }
+.warranty-period { font-size:12px; color:#888; margin-left:auto; }
+.warranty-items { display:flex; flex-direction:column; gap:0.4rem; }
+.warranty-item { display:flex; align-items:flex-start; gap:0.5rem; font-size:13px; color:#1a1a1a; }
+.warranty-item::before { content:'✓'; color:#0f7040; font-weight:700; flex-shrink:0; margin-top:1px; }
+.warranty-exclusions { margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid #a8dfc0; font-size:11px; color:#888; line-height:1.6; }
+
+/* Signature */
+.signature-block { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:1.5rem; }
+.sig-line { border-bottom:1px solid #ccc; margin-bottom:4px; height:2.5rem; }
+.sig-label { font-size:10px; color:#aaa; letter-spacing:0.06em; text-transform:uppercase; }
+
+/* Footer */
+.doc-footer { display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e8e8e8; padding-top:1rem; font-size:12px; color:#aaa; }
+
+/* Print */
+@media print {
+  nav, .form-panel { display:none !important; }
+  .workspace { display:block; }
+  .preview-panel { padding:0; background:#fff; height:auto; }
+  .preview-wrap { max-width:100%; margin:0; }
+  .doc { box-shadow:none; border-radius:0; padding:2cm; }
+  @page { margin:0; }
+}
+@media (max-width:900px) {
+  .workspace { grid-template-columns:1fr; height:auto; overflow:auto; }
+  .form-panel { height:auto; }
+  .preview-panel { height:auto; }
+}
+
+  /* ── Access gate ── */
+  #gate {
+    position:fixed; inset:0; z-index:9999;
+    background:var(--carbon);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:1.5rem;
+  }
+  #gate.unlocked { display:none; }
+  .gate-logo { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:2rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--white); }
+  .gate-logo span { color:var(--ice); }
+  .gate-label { font-size:0.78rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+  .gate-input-wrap { display:flex; gap:0.5rem; }
+  #gate-input {
+    width:180px; background:var(--panel); border:1px solid var(--divider);
+    border-radius:3px; color:var(--white); font-family:'Barlow Condensed',sans-serif;
+    font-size:1.5rem; font-weight:700; letter-spacing:0.3em; text-transform:uppercase;
+    padding:0.7rem 1rem; outline:none; text-align:center; transition:border-color 0.2s;
+  }
+  #gate-input:focus { border-color:var(--ice-border); }
+  #gate-input.shake { border-color:rgba(255,80,80,0.6); animation:gshake 0.3s ease; }
+  @keyframes gshake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  #gate-btn {
+    background:var(--ice); border:none; border-radius:3px; color:var(--carbon);
+    font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:700;
+    letter-spacing:0.1em; text-transform:uppercase; padding:0.7rem 1.3rem; cursor:pointer; transition:opacity 0.2s;
+  }
+  #gate-btn:hover { opacity:0.85; }
+  .gate-error { font-size:0.78rem; color:rgba(255,100,100,0.9); min-height:1rem; }
+
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-logo">Svalbergs<span> Bilteknik</span></div>
+  <div class="gate-label">Internt verktyg · Ange kod</div>
+  <div class="gate-input-wrap">
+    <input type="text" id="gate-input" maxlength="6" placeholder="······" autocomplete="off" autocorrect="off" spellcheck="false" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+    <button id="gate-btn" onclick="checkGate()">OK</button>
+  </div>
+  <div class="gate-error" id="gate-error"></div>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Svalbergs<span> Bilteknik</span></a>
+  <div class="nav-links-right">
+    <a href="offert.html" class="nav-back">Offertverktyg</a>
+    <a href="index.html" class="nav-back">← Tillbaka</a>
+  </div>
+</nav>
+
+<div class="workspace">
+
+  <!-- ── FORM PANEL ── -->
+  <div class="form-panel">
+    <h2>Leveranskvitto</h2>
+
+    <div class="form-section">
+      <div class="form-section-label">Dokument</div>
+      <div class="field-row">
+        <div>
+          <label>Kvittonummer</label>
+          <input type="text" id="f-num" placeholder="LK-2025-001">
+        </div>
+        <div>
+          <label>Datum</label>
+          <input type="date" id="f-date">
+        </div>
+        <div>
+          <label>Tid</label>
+          <input type="time" id="f-time">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Kund</div>
+      <div class="field-row single">
+        <div><label>Namn</label><input type="text" id="f-name" placeholder="Erik Lindqvist"></div>
+      </div>
+      <div class="field-row">
+        <div><label>Stad</label><input type="text" id="f-city" placeholder="Stockholm"></div>
+        <div><label>E-post (valfritt)</label><input type="email" id="f-email" placeholder="erik@mail.se"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Fordon</div>
+      <div class="field-row">
+        <div><label>Märke & Modell</label><input type="text" id="f-car" placeholder="Renault Clio V"></div>
+        <div><label>Registreringsnummer</label><input type="text" id="f-reg" placeholder="ABC123" oninput="this.value=this.value.toUpperCase()"></div>
+      </div>
+      <div class="field-row">
+        <div><label>Miltal vid leverans</label><input type="text" id="f-mileage" placeholder="t.ex. 85 432 km"></div>
+        <div><label>Fabriksljud</label><input type="text" id="f-audio" placeholder="t.ex. Standard"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Utfört arbete</div>
+      <div class="work-items" id="workItems"></div>
+      <button class="btn-add" onclick="addWork()">+ Lägg till arbete</button>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Garantivillkor</div>
+      <div class="warranty-opts" id="warrantyOpts">
+        <button class="w-btn active" data-type="include" data-text="Arbetsgaranti ingår på installationen." onclick="toggleW(this)">Arbetsgaranti</button>
+        <button class="w-btn" data-type="include" data-text="Ingen garanti lämnas på detta arbete." onclick="toggleW(this)">Ingen garanti</button>
+        <button class="w-btn" data-type="include" data-text="Utrustningsgaranti gäller enligt tillverkarens villkor." onclick="toggleW(this)">Tillverkargaranti</button>
+        <button class="w-btn" data-type="include" data-text="Systemet är kalibrerat och godkänt vid leverans." onclick="toggleW(this)">Kalibrering ingår</button>
+        <button class="w-btn" data-type="include" data-text="Funktionstest utfört och godkänt vid leverans." onclick="toggleW(this)">Testat & godkänt</button>
+        <button class="w-btn" data-type="include" data-text="Bilen är återställd till originalskick efter arbetet." onclick="toggleW(this)">Återställd till original</button>
+        <button class="w-btn active" data-type="include" data-text="Fel relaterade till monteringen åtgärdas kostnadsfritt." onclick="toggleW(this)">Kostnadsfri åtgärd</button>
+        <button class="w-btn active" data-type="exclude" data-text="Garantin gäller ej vid yttre påverkan, felaktig användning eller ingrepp av tredje part." onclick="toggleW(this)">Begränsningar</button>
+        <button class="w-btn" data-type="include" data-text="Ring eller skriv om något känns fel — vi löser det." onclick="toggleW(this)">Kontakta oss</button>
+      </div>
+      <div style="margin-top:0.6rem;">
+        <label>Garantiperiod</label>
+        <select id="f-warranty-period">
+          <option value="12 månader">12 månader</option>
+          <option value="6 månader">6 månader</option>
+          <option value="3 månader">3 månader</option>
+          <option value="Tillsvidare">Tillsvidare</option>
+          <option value="Ingen garanti">Ingen garanti</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Övrig notering</div>
+      <div class="field-row single">
+        <div><label>Fritext (visas längst ned)</label>
+        <textarea id="f-notes" placeholder="T.ex. råd om inkörtid, inställningar, kontaktinfo...">Kontakta gärna om du har frågor om din installation. Vi finns på svalbergs.se.</textarea></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-label">Signatur</div>
+      <div class="field-row">
+        <div>
+          <label>Visa kundsignatur</label>
+          <select id="f-sig">
+            <option value="yes">Ja – plats för signatur</option>
+            <option value="no">Nej</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">🖨 Skriv ut / Spara som PDF</button>
+  </div>
+
+  <!-- ── PREVIEW ── -->
+  <div class="preview-panel">
+    <div class="preview-wrap">
+      <div class="doc" id="deliveryDoc">
+
+        <div class="doc-header">
+          <div>
+            <div class="doc-company">Svalbergs<span> Bilteknik</span></div>
+            <div class="doc-company-sub">svalbergs.se</div>
+          </div>
+          <div class="doc-type-block">
+            <div class="doc-type-label">Leveranskvitto</div>
+            <div class="doc-type-val" id="p-num">LK-2025-001</div>
+            <div class="doc-type-date" id="p-date">—</div>
+            <div class="doc-type-date" id="p-time" style="color:#aaa;font-size:11px;"></div>
+          </div>
+        </div>
+
+        <div class="doc-meta">
+          <div class="meta-box">
+            <div class="lbl">Kund</div>
+            <div class="val" id="p-name">—</div>
+            <div class="sub" id="p-city"></div>
+            <div class="sub" id="p-email" style="color:#0088aa;"></div>
+          </div>
+          <div class="meta-box">
+            <div class="lbl">Fordon</div>
+            <div class="val" id="p-car">—</div>
+            <div class="sub" id="p-reg"></div>
+            <div class="sub" id="p-mileage"></div>
+            <div class="sub" id="p-audio"></div>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-bottom:0.5rem;">Utfört arbete</div>
+        <table class="work-table" id="p-work">
+          <tr><td colspan="2" style="color:#aaa;padding:1rem 0;font-size:13px;">Lägg till utfört arbete i formuläret</td></tr>
+        </table>
+
+        <div class="warranty-block" id="p-warranty-block">
+          <div class="warranty-header">
+            <span class="warranty-icon">🛡</span>
+            <span class="warranty-title">Garanti & Villkor</span>
+            <span class="warranty-period" id="p-warranty-period">12 månader</span>
+          </div>
+          <div class="warranty-items" id="p-warranty-items"></div>
+          <div class="warranty-exclusions" id="p-warranty-excl"></div>
+        </div>
+
+        <div class="signature-block" id="p-sig-block">
+          <div>
+            <div class="sig-line"></div>
+            <div class="sig-label">Kund – godkänner mottagandet</div>
+          </div>
+          <div>
+            <div class="sig-line"></div>
+            <div class="sig-label">Svalbergs Bilteknik</div>
+          </div>
+        </div>
+
+        <div class="doc-footer">
+          <div>Svalbergs Bilteknik · svalbergs.se</div>
+          <div id="p-notes" style="max-width:300px;text-align:right;"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Helpers ──
+function fmt(d) { if(!d) return '—'; var p=d.split('-'); return p[0].slice(2)+'-'+p[1]+'-'+p[2]; }
+function today() { return new Date().toISOString().split('T')[0]; }
+function nextNum() {
+  var n = parseInt(localStorage.getItem('sb-lk-counter')||'0')+1;
+  localStorage.setItem('sb-lk-counter',n);
+  return 'LK-2025-'+String(n).padStart(3,'0');
+}
+function bind(fid,pid,tr) {
+  var el=document.getElementById(fid), pel=document.getElementById(pid);
+  if(!el||!pel) return;
+  function up(){ pel.textContent=tr?tr(el.value):(el.value||'—'); }
+  el.addEventListener('input',up); el.addEventListener('change',up); up();
+}
+
+// ── Work items ──
+var works = [];
+var warrantyActive = [];
+
+function addWork(name,detail) {
+  var id=Date.now()+Math.random();
+  works.push({id:id,name:name||'',detail:detail||''});
+  renderWorks();
+}
+function removeWork(id) { works=works.filter(function(w){return w.id!==id;}); renderWorks(); }
+function updateWork(id,field,val) { works.forEach(function(w){if(w.id===id)w[field]=val;}); renderPreview(); }
+
+function renderWorks() {
+  var c=document.getElementById('workItems'); c.innerHTML='';
+  works.forEach(function(w) {
+    var d=document.createElement('div'); d.className='work-item';
+    d.innerHTML=
+      '<button class="remove-work" onclick="removeWork('+w.id+')">✕</button>'+
+      '<div class="work-item-grid">'+
+        '<div><label>Åtgärd / Tjänst</label><input type="text" value="'+esc(w.name)+'" oninput="updateWork('+w.id+',\'name\',this.value)" placeholder="Bilstereo Kenwood"></div>'+
+        '<div><label>Status</label><select onchange="updateWork('+w.id+',\'status\',this.value)"><option value="Utfört">Utfört</option><option value="Utfört & Testat">Utfört & Testat</option><option value="Testat & klart">Testat & klart</option><option value="Kalibrerat">Kalibrerat</option></select></div>'+
+      '</div>'+
+      '<div><label>Detaljer</label><input type="text" value="'+esc(w.detail)+'" oninput="updateWork('+w.id+',\'detail\',this.value)" placeholder="Inkl. adapterkablar, CarPlay aktiverat"></div>';
+    c.appendChild(d);
+  });
+  renderPreview();
+}
+
+function esc(s){ return (s||'').replace(/"/g,'&quot;'); }
+
+// ── Warranty toggles ──
+document.querySelectorAll('.w-btn').forEach(function(b) {
+  if(b.classList.contains('active')) warrantyActive.push(b.textContent.trim());
+});
+
+function toggleW(btn,text) {
+  var idx=warrantyActive.indexOf(text);
+  if(idx>=0){ warrantyActive.splice(idx,1); btn.classList.remove('active'); }
+  else { warrantyActive.push(text); btn.classList.add('active'); }
+  renderPreview();
+}
+
+// ── Render preview ──
+function renderPreview() {
+  // Work table
+  var tb=document.getElementById('p-work');
+  if(!works.length) {
+    tb.innerHTML='<tr><td colspan="2" style="color:#aaa;padding:1rem 0;font-size:13px;">Lägg till utfört arbete i formuläret</td></tr>';
+  } else {
+    tb.innerHTML=works.map(function(w){
+      var statusVal=w.status||'Utfört';
+      return '<tr>'+
+        '<td><div class="work-name">'+(w.name||'—')+'</div>'+(w.detail?'<div class="work-detail">'+w.detail+'</div>':'')+' </td>'+
+        '<td style="text-align:right;"><span class="work-status status-done">'+statusVal+'</span></td>'+
+      '</tr>';
+    }).join('');
+  }
+
+  // Warranty — read directly from button state
+  var period = document.getElementById('f-warranty-period').value;
+  document.getElementById('p-warranty-period').textContent = period;
+  var block = document.getElementById('p-warranty-block');
+  var activebtns = document.querySelectorAll('.w-btn.active');
+  if (period === 'Ingen garanti' || !activebtns.length) {
+    block.style.display = 'none';
+  } else {
+    block.style.display = '';
+    var includes = [], excludes = [];
+    activebtns.forEach(function(b) {
+      if (b.dataset.type === 'exclude') excludes.push(b.dataset.text);
+      else includes.push(b.dataset.text);
+    });
+    document.getElementById('p-warranty-items').innerHTML =
+      includes.map(function(t) { return '<div class="warranty-item">' + t + '</div>'; }).join('');
+    var exclEl = document.getElementById('p-warranty-excl');
+    exclEl.textContent = excludes.join(' ');
+    exclEl.style.display = excludes.length ? '' : 'none';
+  }
+
+  // Signature
+  var sig=document.getElementById('f-sig').value;
+  document.getElementById('p-sig-block').style.display=sig==='yes'?'':'none';
+
+  // Notes
+  document.getElementById('p-notes').textContent=document.getElementById('f-notes').value;
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('f-date').value=today();
+  document.getElementById('f-time').value=new Date().toTimeString().slice(0,5);
+  document.getElementById('f-num').value=nextNum();
+
+  bind('f-num','p-num',function(v){return v||'LK-2025-001';});
+  bind('f-date','p-date',fmt);
+  bind('f-time','p-time',function(v){ return v ? 'Kl. '+v : ''; });
+  bind('f-name','p-name');
+  bind('f-city','p-city');
+  bind('f-email','p-email');
+  bind('f-car','p-car');
+  bind('f-reg','p-reg',function(v){return v?'Reg: '+v:'';});
+  bind('f-mileage','p-mileage',function(v){return v?'Miltal: '+v:'';});
+  bind('f-audio','p-audio',function(v){return v?'Fabriksljud: '+v:'';});
+  bind('f-notes','p-notes');
+
+  document.getElementById('f-warranty-period').addEventListener('change',renderPreview);
+  document.getElementById('f-sig').addEventListener('change',renderPreview);
+
+  renderPreview();
+  addWork('','');
+});
+
+/* Gate */
+(function(){
+  var SK='sb-gate-v1';
+  var H='67d3ad3a495';
+  function jh(s){var h=0,i,c;for(i=0;i<s.length;i++){c=s.charCodeAt(i);h=((h<<5)-h)+c;h|=0;}var r=Math.abs(h).toString(16).padStart(8,'0');if(s.length>0){var t=s.length*7+s.charCodeAt(0)*13;r+=t.toString(16);}return r;}
+  if(sessionStorage.getItem(SK)===H){document.getElementById('gate').classList.add('unlocked');}
+  window.checkGate=function(){
+    var v=document.getElementById('gate-input').value.toUpperCase().trim();
+    var inp=document.getElementById('gate-input');
+    var err=document.getElementById('gate-error');
+    if(jh(v)===H){sessionStorage.setItem(SK,H);document.getElementById('gate').classList.add('unlocked');}
+    else{inp.classList.add('shake');err.textContent='Fel kod.';setTimeout(function(){inp.classList.remove('shake');inp.value='';inp.focus();},600);}
+  };
+  document.addEventListener('keydown',function(e){if(e.key==='Enter'&&!document.getElementById('gate').classList.contains('unlocked'))checkGate();});
+})();
+
+</script>
+
+</body>
+</html>
