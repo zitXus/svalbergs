@@ -127,7 +127,7 @@ textarea { resize:vertical; min-height:60px; }
 
 /* Print */
 @media print {
-  nav, .form-panel { display:none !important; }
+  nav, .form-panel, .num-modal-overlay, #gate { display:none !important; }
   .workspace { display:block; }
   .preview-panel { padding:0; background:#fff; height:auto; }
   .preview-wrap { max-width:100%; margin:0; }
@@ -169,6 +169,28 @@ textarea { resize:vertical; min-height:60px; }
   #gate-btn:hover { opacity:0.85; }
   .gate-error { font-size:0.78rem; color:rgba(255,100,100,0.9); min-height:1rem; }
 
+
+  /* ── Page number modal ── */
+  .num-modal-overlay {
+    display:none; position:fixed; inset:0; z-index:1000;
+    background:rgba(13,13,15,0.85); align-items:center; justify-content:center;
+  }
+  .num-modal-overlay.open { display:flex; }
+  .num-modal {
+    background:var(--steel); border:1px solid var(--ice-border);
+    border-radius:8px; padding:2rem; width:320px; text-align:center;
+    box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  }
+  .num-modal h3 { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.4rem; text-transform:uppercase; margin-bottom:0.4rem; }
+  .num-modal p { font-size:0.82rem; color:var(--muted); margin-bottom:1.2rem; }
+  .num-modal input { width:100%; text-align:center; font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:700; letter-spacing:0.1em; margin-bottom:1rem; }
+  .num-modal-btns { display:flex; gap:0.5rem; }
+  .num-modal-btns button { flex:1; padding:0.7rem; border:none; border-radius:3px; font-family:'Inter',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:opacity 0.2s; }
+  .num-modal-btns .confirm { background:var(--ice); color:var(--carbon); }
+  .num-modal-btns .confirm:hover { opacity:0.85; }
+  .num-modal-btns .cancel { background:var(--panel); color:var(--muted); border:1px solid var(--divider); }
+  .num-modal-btns .cancel:hover { color:var(--white); }
+
 </style>
 </head>
 <body>
@@ -202,7 +224,10 @@ textarea { resize:vertical; min-height:60px; }
       <div class="field-row">
         <div>
           <label>Kvittonummer</label>
-          <input type="text" id="f-num" placeholder="LK-2025-001">
+          <div style="display:flex;gap:0.4rem;">
+            <input type="text" id="f-num" placeholder="LK-2025-001" style="flex:1;">
+            <button onclick="resetCounter()" title="Nollställ räknaren" style="background:var(--panel);border:1px solid var(--divider);border-radius:3px;color:var(--muted);cursor:pointer;padding:0 0.6rem;font-size:0.85rem;transition:all 0.15s;" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--muted)'">↺</button>
+          </div>
         </div>
         <div>
           <label>Datum</label>
@@ -235,6 +260,20 @@ textarea { resize:vertical; min-height:60px; }
       <div class="field-row">
         <div><label>Miltal vid leverans</label><input type="text" id="f-mileage" placeholder="t.ex. 85 432 km"></div>
         <div><label>Fabriksljud</label><input type="text" id="f-audio" placeholder="t.ex. Standard"></div>
+      </div>
+      <div class="field-row">
+        <div><label>Totalt betalt (valfritt)</label><input type="text" id="f-price" placeholder="t.ex. 2 495 kr"></div>
+        <div><label>Betalningssätt</label>
+          <select id="f-pay">
+            <option value="">—</option>
+            <option value="Swish">Swish</option>
+            <option value="Kontant">Kontant</option>
+            <option value="Kort">Kort</option>
+            <option value="Faktura">Faktura</option>
+            <option value="Bankgiro">Bankgiro</option>
+            <option value="Gratis 💚">Gratis 💚</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -290,7 +329,7 @@ textarea { resize:vertical; min-height:60px; }
       </div>
     </div>
 
-    <button class="btn-print" onclick="window.print()">🖨 Skriv ut / Spara som PDF</button>
+    <button class="btn-print" onclick="openNumModal()">🖨 Skriv ut / Spara som PDF</button>
   </div>
 
   <!-- ── PREVIEW ── -->
@@ -324,6 +363,11 @@ textarea { resize:vertical; min-height:60px; }
             <div class="sub" id="p-reg"></div>
             <div class="sub" id="p-mileage"></div>
             <div class="sub" id="p-audio"></div>
+          </div>
+          <div class="meta-box" id="p-payment-box" style="display:none;">
+            <div class="lbl">Betalning</div>
+            <div class="val" id="p-price"></div>
+            <div class="sub" id="p-pay"></div>
           </div>
         </div>
 
@@ -371,6 +415,16 @@ function nextNum() {
   var n = parseInt(localStorage.getItem('sb-lk-counter')||'0')+1;
   localStorage.setItem('sb-lk-counter',n);
   return 'LK-2025-'+String(n).padStart(3,'0');
+}
+
+function resetCounter() {
+  var val = prompt('Sätt räknaren till vilket nummer? (nuvarande: '+(localStorage.getItem('sb-lk-counter')||'0')+')', '0');
+  if (val === null) return;
+  var n = parseInt(val) || 0;
+  localStorage.setItem('sb-lk-counter', n);
+  var numEl = document.getElementById('f-num');
+  numEl.value = 'LK-2025-' + String(n + 1).padStart(3, '0');
+  numEl.dispatchEvent(new Event('input'));
 }
 function bind(fid,pid,tr) {
   var el=document.getElementById(fid), pel=document.getElementById(pid);
@@ -482,6 +536,16 @@ document.addEventListener('DOMContentLoaded',function(){
   bind('f-reg','p-reg',function(v){return v?'Reg: '+v:'';});
   bind('f-mileage','p-mileage',function(v){return v?'Miltal: '+v:'';});
   bind('f-audio','p-audio',function(v){return v?'Fabriksljud: '+v:'';});
+  bind('f-price','p-price');
+  bind('f-pay','p-pay');
+  // Show/hide payment box
+  function updatePayBox() {
+    var price = document.getElementById('f-price').value;
+    var pay   = document.getElementById('f-pay').value;
+    document.getElementById('p-payment-box').style.display = (price||pay) ? '' : 'none';
+  }
+  document.getElementById('f-price').addEventListener('input', updatePayBox);
+  document.getElementById('f-pay').addEventListener('change', updatePayBox);
   bind('f-notes','p-notes');
 
   document.getElementById('f-warranty-period').addEventListener('change',renderPreview);
@@ -507,7 +571,44 @@ document.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('keydown',function(e){if(e.key==='Enter'&&!document.getElementById('gate').classList.contains('unlocked'))checkGate();});
 })();
 
+
+/* Page number modal */
+function openNumModal() {
+  document.getElementById('modal-num-input').value = document.getElementById('f-num').value;
+  document.getElementById('numModal').classList.add('open');
+  setTimeout(function(){ document.getElementById('modal-num-input').focus(); document.getElementById('modal-num-input').select(); }, 50);
+}
+function closeNumModal() {
+  document.getElementById('numModal').classList.remove('open');
+}
+function confirmNum() {
+  var val = document.getElementById('modal-num-input').value.trim();
+  if (val) {
+    document.getElementById('f-num').value = val;
+    document.getElementById('f-num').dispatchEvent(new Event('input'));
+  }
+  closeNumModal();
+  window.print();
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeNumModal();
+});
+
 </script>
+
+
+<!-- Page number modal -->
+<div class="num-modal-overlay" id="numModal">
+  <div class="num-modal">
+    <h3>Kvittonummer</h3>
+    <p>Kontrollera numret — sedan skriver vi ut.</p>
+    <input type="text" id="modal-num-input">
+    <div class="num-modal-btns">
+      <button class="cancel" onclick="closeNumModal()">Avbryt</button>
+      <button class="confirm" onclick="confirmNum()">Bekräfta & skriv ut</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

@@ -60,6 +60,9 @@ textarea { resize:vertical; min-height:70px; }
 .line-item-row { display:grid; grid-template-columns:1fr 60px 80px; gap:0.5rem; margin-bottom:0.4rem; }
 .line-item-row.desc-row { grid-template-columns:1fr; }
 .remove-line { position:absolute; top:0.5rem; right:0.5rem; background:none; border:none; color:var(--muted); cursor:pointer; font-size:1rem; line-height:1; transition:color 0.15s; padding:2px 4px; }
+.free-toggle { font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; background:var(--panel); border:1px solid var(--divider); border-radius:3px; color:var(--muted); cursor:pointer; padding:0.25rem 0.55rem; transition:all 0.15s; margin-top:0.35rem; }
+.free-toggle.active { background:var(--green-dim); border-color:var(--green-border); color:var(--green); }
+.strike { text-decoration:line-through; color:#aaa; }
 .remove-line:hover { color:#ff6b6b; }
 
 .btn-add-line { width:100%; background:var(--ice-dim); border:1px dashed var(--ice-border); border-radius:3px; color:var(--ice); font-family:'Inter',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:0.6rem; cursor:pointer; transition:background 0.15s; }
@@ -175,7 +178,7 @@ textarea { resize:vertical; min-height:70px; }
 
 /* ── Print ── */
 @media print {
-  nav, .form-panel { display:none !important; }
+  nav, .form-panel, .num-modal-overlay, #gate { display:none !important; }
   .workspace { display:block; }
   .preview-panel { padding:0; background:#fff; }
   .preview-wrap { max-width:100%; margin:0; }
@@ -219,6 +222,28 @@ textarea { resize:vertical; min-height:70px; }
   #gate-btn:hover { opacity:0.85; }
   .gate-error { font-size:0.78rem; color:rgba(255,100,100,0.9); min-height:1rem; }
 
+
+  /* ── Page number modal ── */
+  .num-modal-overlay {
+    display:none; position:fixed; inset:0; z-index:1000;
+    background:rgba(13,13,15,0.85); align-items:center; justify-content:center;
+  }
+  .num-modal-overlay.open { display:flex; }
+  .num-modal {
+    background:var(--steel); border:1px solid var(--ice-border);
+    border-radius:8px; padding:2rem; width:320px; text-align:center;
+    box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  }
+  .num-modal h3 { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1.4rem; text-transform:uppercase; margin-bottom:0.4rem; }
+  .num-modal p { font-size:0.82rem; color:var(--muted); margin-bottom:1.2rem; }
+  .num-modal input { width:100%; text-align:center; font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:700; letter-spacing:0.1em; margin-bottom:1rem; }
+  .num-modal-btns { display:flex; gap:0.5rem; }
+  .num-modal-btns button { flex:1; padding:0.7rem; border:none; border-radius:3px; font-family:'Inter',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:opacity 0.2s; }
+  .num-modal-btns .confirm { background:var(--ice); color:var(--carbon); }
+  .num-modal-btns .confirm:hover { opacity:0.85; }
+  .num-modal-btns .cancel { background:var(--panel); color:var(--muted); border:1px solid var(--divider); }
+  .num-modal-btns .cancel:hover { color:var(--white); }
+
 </style>
 </head>
 <body>
@@ -260,7 +285,10 @@ textarea { resize:vertical; min-height:70px; }
       <div class="field-row">
         <div>
           <label>Offertnummer</label>
-          <input type="text" id="f-num" placeholder="2025-001">
+          <div style="display:flex;gap:0.4rem;">
+            <input type="text" id="f-num" placeholder="2025-001" style="flex:1;">
+            <button onclick="resetCounter()" title="Nollställ räknaren" style="background:var(--panel);border:1px solid var(--divider);border-radius:3px;color:var(--muted);cursor:pointer;padding:0 0.6rem;font-size:0.85rem;transition:all 0.15s;" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--muted)'">↺</button>
+          </div>
         </div>
         <div>
           <label>Status</label>
@@ -320,7 +348,24 @@ textarea { resize:vertical; min-height:70px; }
     <div class="form-section">
       <div class="form-section-label">Tjänster &amp; material</div>
       <div class="line-items" id="lineItems"></div>
-      <button class="btn-add-line" onclick="addLine()">+ Lägg till rad</button>
+      <div class="form-section-label" style="margin-top:0.5rem;">Snabbval</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.8rem;">
+        <button class="preset-btn" onclick="addLine('Felsökning','Diagnostik och felsökning av befintligt system',1,495)">Felsökning</button>
+        <button class="preset-btn" onclick="addLine('Montering / Installation','Arbetstid för installation',1,495)">Montering</button>
+        <button class="preset-btn" onclick="addLine('Bilstereo / Radio','Inkl. adapterkablar och montering',1,799)">Stereo</button>
+        <button class="preset-btn" onclick="addLine('Subwoofer','Montering i koffert eller under säte',1,599)">Subwoofer</button>
+        <button class="preset-btn" onclick="addLine('Förstärkare','Montering, inställning och kalibrering',1,799)">Förstärkare</button>
+        <button class="preset-btn" onclick="addLine('DSP – Digital signalprocessor','Installation och grundkalibrering',1,1199)">DSP</button>
+        <button class="preset-btn" onclick="addLine('Mikrofon-kalibrering (UMIK-1)','Mätbaserad kalibrering av DSP/EQ',1,499)">UMIK-1 kal.</button>
+        <button class="preset-btn" onclick="addLine('Effektledning','OFC-kabel, säkringsbox och jordledning',1,699)">Effektledning</button>
+        <button class="preset-btn" onclick="addLine('Dörrhögtalare (par)','Montering inkl. adaptrar',1,499)">Dörrhögtalare</button>
+        <button class="preset-btn" onclick="addLine('Ljudisolering – dörrar','CLD-matta i dörrblad, ett par',1,799)">Dörrisolering</button>
+        <button class="preset-btn" onclick="addLine('Dashcam','Diskret montering med dold kabeldragning',1,499)">Dashcam</button>
+        <button class="preset-btn" onclick="addLine('Extra belysning / LED','Montering inkl. relä och säkring',1,599)">LED</button>
+        <button class="preset-btn" onclick="addLine('Material','',1,0)">Material</button>
+        <button class="preset-btn" onclick="addLine('Arbetstid','',1,495)">Arbetstid</button>
+      </div>
+      <button class="btn-add-line" onclick="addLine()">+ Tom rad</button>
     </div>
 
     <div class="form-section">
@@ -384,7 +429,7 @@ textarea { resize:vertical; min-height:70px; }
       </div>
     </div>
 
-    <button class="btn-print" onclick="window.print()">🖨 Skriv ut / Spara som PDF</button>
+    <button class="btn-print" onclick="openNumModal()">🖨 Skriv ut / Spara som PDF</button>
     <button class="btn-save" onclick="saveQuote()">💾 Spara offert</button>
     <button class="btn-new" onclick="newQuote()">+ Ny offert</button>
 
@@ -486,7 +531,7 @@ function in30() {
 function fmtDate(s) {
   if (!s) return '—';
   var p = s.split('-');
-  return p[2] + '/' + p[1] + ' ' + p[0];
+  return p[0].slice(2) + '-' + p[1] + '-' + p[2];
 }
 function nextNum() {
   var n = parseInt(localStorage.getItem('sb-offert-counter') || '0') + 1;
@@ -494,17 +539,32 @@ function nextNum() {
   return '2025-' + String(n).padStart(3, '0');
 }
 
+function resetCounter() {
+  var val = prompt('Sätt räknaren till vilket nummer? (nuvarande: ' + (localStorage.getItem('sb-offert-counter')||'0') + ')', '0');
+  if (val === null) return;
+  var n = parseInt(val) || 0;
+  localStorage.setItem('sb-offert-counter', n);
+  var numEl = document.getElementById('f-num');
+  numEl.value = '2025-' + String(n + 1).padStart(3, '0');
+  numEl.dispatchEvent(new Event('input'));
+}
+
 // ── Line items ────────────────────────────────────────────────────────
 var lines = [];
 
 function addLine(name, desc, qty, price) {
   var id = Date.now() + Math.random();
-  lines.push({ id: id, name: name||'', desc: desc||'', qty: qty||1, price: price||0 });
+  lines.push({ id: id, name: name||'', desc: desc||'', qty: qty||1, price: price||0, free: false });
   renderLines();
 }
 
 function removeLine(id) {
   lines = lines.filter(function(l){ return l.id !== id; });
+  renderLines();
+}
+
+function toggleFree(id) {
+  lines.forEach(function(l){ if(l.id === id) l.free = !l.free; });
   renderLines();
 }
 
@@ -521,7 +581,8 @@ function renderLines() {
         '<div><label>Antal</label><input type="number" value="' + l.qty + '" min="1" step="1" oninput="updateLine(' + l.id + ',\'qty\',parseFloat(this.value)||1)" style="text-align:center;"></div>' +
         '<div><label id="price-lbl-' + l.id + '">Á-pris</label><input type="number" value="' + l.price + '" min="0" step="1" oninput="updateLine(' + l.id + ',\'price\',parseFloat(this.value)||0)" style="text-align:right;"></div>' +
       '</div>' +
-      '<div class="line-item-row desc-row"><div><label>Beskrivning (valfri)</label><input type="text" value="' + esc(l.desc) + '" oninput="updateLine(' + l.id + ',\'desc\',this.value)" placeholder="Inkl. montering och adapterkablar"></div></div>';
+      '<div class="line-item-row desc-row"><div><label>Beskrivning (valfri)</label><input type="text" value="' + esc(l.desc) + '" oninput="updateLine(' + l.id + ',\'desc\',this.value)" placeholder="Inkl. montering och adapterkablar"></div></div>' +
+      '<button class="free-toggle' + (l.free ? ' active' : '') + '" onclick="toggleFree(' + l.id + ')">💚 ' + (l.free ? 'Gratis – klicka för att ångra' : 'Gör gratis') + '</button>';
     container.appendChild(div);
   });
   renderPreview();
@@ -553,16 +614,17 @@ function renderPreview() {
   } else {
     tbody.innerHTML = lines.map(function(l) {
       var sum = (l.qty || 1) * (l.price || 0);
+      var isFree = l.free;
       return '<tr>' +
         '<td><div class="row-name">' + (l.name || '—') + '</div>' + (l.desc ? '<div class="row-desc">' + l.desc + '</div>' : '') + '</td>' +
-        '<td class="r row-price">' + (l.qty||1) + '</td>' +
-        '<td class="r row-price">' + fmt(l.price||0) + '</td>' +
-        '<td class="r row-total">' + fmt(sum) + '</td>' +
+        '<td class="r row-price' + (isFree ? ' strike' : '') + '">' + (l.qty||1) + '</td>' +
+        '<td class="r row-price' + (isFree ? ' strike' : '') + '">' + fmt(l.price||0) + '</td>' +
+        '<td class="r row-total">' + (isFree ? '<span style="color:#2CB97A;font-weight:700;">Gratis 💚</span>' : fmt(sum)) + '</td>' +
       '</tr>';
     }).join('');
   }
   // Totals
-  var netto = lines.reduce(function(s, l){ return s + (l.qty||1)*(l.price||0); }, 0);
+  var netto = lines.reduce(function(s, l){ return s + (l.free ? 0 : (l.qty||1)*(l.price||0)); }, 0);
   var firma = window.currentMode === 'firma';
 
   // Discount
@@ -825,7 +887,44 @@ window.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('keydown',function(e){if(e.key==='Enter'&&!document.getElementById('gate').classList.contains('unlocked'))checkGate();});
 })();
 
+
+/* Page number modal */
+function openNumModal() {
+  document.getElementById('modal-num-input').value = document.getElementById('f-num').value;
+  document.getElementById('numModal').classList.add('open');
+  setTimeout(function(){ document.getElementById('modal-num-input').focus(); document.getElementById('modal-num-input').select(); }, 50);
+}
+function closeNumModal() {
+  document.getElementById('numModal').classList.remove('open');
+}
+function confirmNum() {
+  var val = document.getElementById('modal-num-input').value.trim();
+  if (val) {
+    document.getElementById('f-num').value = val;
+    document.getElementById('f-num').dispatchEvent(new Event('input'));
+  }
+  closeNumModal();
+  window.print();
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeNumModal();
+});
+
 </script>
+
+
+<!-- Page number modal -->
+<div class="num-modal-overlay" id="numModal">
+  <div class="num-modal">
+    <h3>Offertnummer</h3>
+    <p>Kontrollera numret — sedan skriver vi ut.</p>
+    <input type="text" id="modal-num-input">
+    <div class="num-modal-btns">
+      <button class="cancel" onclick="closeNumModal()">Avbryt</button>
+      <button class="confirm" onclick="confirmNum()">Bekräfta & skriv ut</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
